@@ -33,7 +33,7 @@
   },
   "main": "index.js",
   "engines": {
-    "node": "7.x"
+    "node": "6.x"
   },
   "scripts": {
     "build": "webpack",
