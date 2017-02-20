@@ -1,4 +1,4 @@
-import {Request} from "express";
+import {Request, Response} from "express";
 
 export interface StartRequest extends Request {
     body: StartRequestData;
@@ -8,6 +8,15 @@ export interface StartRequestData {
     game_id: string;
     height: number;
     width: number;
+}
+
+interface StartSend {
+    (status: number, body?: StartResponseData): StartResponse;
+    (body?: StartResponseData): StartResponse;
+}
+
+export interface StartResponse {
+    json: StartSend;
 }
 
 export interface StartResponseData {
@@ -31,8 +40,19 @@ export interface MoveRequestData {
     snakes: Snake[];
 }
 
+interface MoveSend {
+    (status: number, body?: MoveResponseData): MoveResponse;
+    (body?: MoveResponseData): MoveResponse;
+}
+
+export interface MoveResponse {
+    json: MoveSend;
+}
+
+type Move = "up" | "down" | "left" | "right";
+
 export interface MoveResponseData {
-    move: "up"|"left"|"down"|"right";
+    move: Move;
     taunt?: string;
 }
 
