@@ -1,5 +1,5 @@
 {
-  "name": "battlesnake-node",
+  "name": "battlesnake-node-typescript",
   "description": "A simple BattleSnake AI written in TypeScript for NodeJS",
   "version": "0.0.0",
   "private": true,
@@ -36,6 +36,7 @@
   },
   "scripts": {
     "build": "webpack",
-    "start": "nf start"
+    "start": "nf start",
+    "postinstall": "npm run build"
   }
 }
