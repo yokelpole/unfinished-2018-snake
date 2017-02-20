@@ -1,4 +1,4 @@
-import {Request} from "express"
+import {Request} from "express";
 
 export interface StartRequest extends Request {
     body: StartRequestData;
@@ -27,8 +27,8 @@ export interface MoveRequestData {
     width: number;
     turn: number;
     you: string;
-    food: Array<Point>;
-    snakes: Array<Snake>;
+    food: Point[];
+    snakes: Snake[];
 }
 
 export interface MoveResponseData {
@@ -36,15 +36,12 @@ export interface MoveResponseData {
     taunt?: string;
 }
 
-export interface Point {
-    0: number;
-    1: number;
-}
+export type Point = [number, number];
 
 export interface Snake {
     id: string;
     name: string;
     taunt: string;
     health_points: number;
-    coords: Array<Point>;
+    coords: Point[];
 }
