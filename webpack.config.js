@@ -15,13 +15,6 @@ module.exports = {
         filename: 'index.js',
         libraryTarget: 'commonjs2'
     },
-    externals: {
-        // These modules are already installed on the Lambda instance.
-        'aws-sdk': 'aws-sdk',
-        'awslambda': 'awslambda',
-        'dynamodb-doc': 'dynamodb-doc',
-        'imagemagick': 'imagemagick'
-    },
     bail: true,
     resolve: {
         extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js']
