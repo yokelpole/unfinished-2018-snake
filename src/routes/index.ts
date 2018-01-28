@@ -33,7 +33,7 @@ router.post(
       color: "#CCCCFF",
       name: "Periwinkle the Snake",
       head_url: "http://www.placecage.com/c/200/200", // optional, but encouraged!
-      taunt: requestData.game_id // optional, but encouraged!
+      taunt: "This is goind to end badly" // optional, but encouraged!
     };
 
     return res.json(responseData);
@@ -59,7 +59,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     right: false
   };
 
-  console.log(requestData);
+  console.log(JSON.stringify(requestData));
 
   // Own snake data.
   const ownSnake: Snake = requestData.you;
