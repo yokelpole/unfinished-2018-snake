@@ -120,31 +120,22 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     const otherSnakeHead = otherSnakeBody[0];
 
     if (
-      _.inRange(
-        snakeHeadX - 1,
-        otherSnakeHead.x - 1,
-        otherSnakeHead.x + 1 && snakeHeadY === otherSnakeHead.y
-      )
+      snakeHeadX - 1 === otherSnakeHead.x + 1 &&
+      snakeHeadY === otherSnakeHead.y
     )
       invalidDirections.left = true;
     if (
-      _.inRange(
-        snakeHeadY - 1,
-        otherSnakeHead.y - 1,
-        otherSnakeHead.y + 1 && snakeHeadX === otherSnakeHead.x
-      )
+      snakeHeadY - 1 === otherSnakeHead.y + 1 &&
+      snakeHeadX === otherSnakeHead.x
     )
       invalidDirections.up = true;
     if (
-      _.inRange(
-        snakeHeadX + 1,
-        otherSnakeHead.x - 1,
-        otherSnakeHead.x + 1 && snakeHeadY === otherSnakeHead.y
-      )
+      snakeHeadX + 1 === otherSnakeHead.x - 1 &&
+      snakeHeadY === otherSnakeHead.y
     )
       invalidDirections.right = true;
     if (
-      _.inRange(snakeHeadY + 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1) &&
+      snakeHeadY + 1 === otherSnakeHead.y - 1 &&
       snakeHeadX === otherSnakeHead.x
     )
       invalidDirections.down = true;
@@ -154,27 +145,27 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   if (!move) {
     _.each(otherSnakes, otherSnake => {
       const otherSnakeBody = otherSnake.body.data;
-      if (otherSnakeBody.length < ownSnake.length) return;
+      if (otherSnake.length >= ownSnake.length) return;
 
       const otherSnakeHead = otherSnakeBody[0];
 
       if (
-        _.inRange(snakeHeadX - 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1) &&
+        snakeHeadX - 1 === otherSnakeHead.x + 1 &&
         snakeHeadY === otherSnakeHead.y
       )
         move = getMove("left", invalidDirections);
       if (
-        _.inRange(snakeHeadY - 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1) &&
+        snakeHeadY - 1 === otherSnakeHead.y + 1 &&
         snakeHeadX === otherSnakeHead.x
       )
         move = getMove("up", invalidDirections);
       if (
-        _.inRange(snakeHeadX + 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1) &&
+        snakeHeadX + 1 === otherSnakeHead.x - 1 &&
         snakeHeadY === otherSnakeHead.y
       )
         move = getMove("right", invalidDirections);
       if (
-        _.inRange(snakeHeadY + 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1) &&
+        snakeHeadY + 1 === otherSnakeHead.y - 1 &&
         snakeHeadX === otherSnakeHead.x
       )
         move = getMove("down", invalidDirections);
@@ -241,6 +232,8 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
     taunt = "This is the end for me!";
   }
+
+  console.log(invalidDirections);
 
   // Response data
   const responseData: MoveResponseData = { move, taunt };
