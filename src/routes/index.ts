@@ -72,8 +72,8 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
   _.each(occupiedCoordinates, coordinate => {
     if (snakeHeadX + 1 === coordinate.x) invalidDirections.right = true;
     if (snakeHeadX - 1 === coordinate.x) invalidDirections.left = true;
-    if (snakeHeadY + 1 === coordinate.y) invalidDirections.down = true;
-    if (snakeHeadY - 1 === coordinate.y) invalidDirections.up = true;
+    if (snakeHeadY + 1 === coordinate.y) invalidDirections.up = true;
+    if (snakeHeadY - 1 === coordinate.y) invalidDirections.down = true;
   });
 
   console.log(invalidDirections);
@@ -98,13 +98,13 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
     const otherSnakeHead = otherSnakeBody[0]; 
 
     if (_.inRange(snakeHeadX - 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1)) invalidDirections.left = true;
-    if (_.inRange(snakeHeadY - 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1)) invalidDirections.up = true;
+    if (_.inRange(snakeHeadY - 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1)) invalidDirections.down = true;
     if (_.inRange(snakeHeadX + 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1)) invalidDirections.right = true;
-    if (_.inRange(snakeHeadY + 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1)) invalidDirections.down = true;
+    if (_.inRange(snakeHeadY + 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1)) invalidDirections.up = true;
   });
 
   // If there is a less powerful snake within range possibly stop it.
-  /*_.each(otherSnakes, otherSnake => {
+  _.each(otherSnakes, otherSnake => {
     const otherSnakeBody = otherSnake.body.data;
     if (otherSnakeBody.length < snakeLength) return;
 
@@ -112,16 +112,16 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
     console.log(otherSnakeHead);
 
     if (_.inRange(snakeHeadX - 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1)) move = getMove('left', invalidDirections);
-    if (_.inRange(snakeHeadY - 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1)) move = getMove('up', invalidDirections);
+    if (_.inRange(snakeHeadY - 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1)) move = getMove('down', invalidDirections);
     if (_.inRange(snakeHeadX + 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1)) move = getMove('right', invalidDirections);
-    if (_.inRange(snakeHeadY + 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1)) move = getMove('down', invalidDirections);
+    if (_.inRange(snakeHeadY + 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1)) move = getMove('up', invalidDirections);
 
     taunt = 'I\'m coming for ya!';
-  });*/
+  });
 
   // If there is a food pellet nearby then grab it.
   if (!move && closestFood) {
-    if (snakeHeadX === closestFood.x) move = snakeHeadY < closestFood.x ? getMove('down', invalidDirections) : getMove('up', invalidDirections);
+    if (snakeHeadX === closestFood.x) move = snakeHeadY < closestFood.x ? getMove('up', invalidDirections) : getMove('down', invalidDirections);
     if (snakeHeadY === closestFood.y) move = snakeHeadX < closestFood.y ? getMove('right', invalidDirections) : getMove('left', invalidDirections);
     
     if (!move) {
@@ -130,8 +130,8 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
       if (snakeHeadX < closestFood.x) possibleDirections.push('left')
       else possibleDirections.push('right');
 
-      if (snakeHeadY < closestFood.y) possibleDirections.push('down')
-      else possibleDirections.push('up');
+      if (snakeHeadY < closestFood.y) possibleDirections.push('up')
+      else possibleDirections.push('down');
 
       move = Math.random() < 0.5 ? getMove(possibleDirections[0], invalidDirections)  : getMove(possibleDirections[1], invalidDirections);
     }
