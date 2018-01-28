@@ -115,7 +115,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   let otherSnakeCoordinates = [];
   _.each(otherSnakes, otherSnake => {
     const otherSnakeBody = otherSnake.body.data;
-    if (otherSnakeBody.length >= ownSnake.length) return;
+    if (otherSnake.length <= ownSnake.length) return;
 
     const otherSnakeHead = otherSnakeBody[0];
 
