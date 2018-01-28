@@ -117,11 +117,11 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
     if (_.inRange(snakeHeadX - 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1) && snakeHeadY === otherSnakeHead.y) 
       move = getMove('left', invalidDirections);
     if (_.inRange(snakeHeadY - 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1) && snakeHeadX === otherSnakeHead.x) 
-      move = getMove('up', invalidDirections);
+      move = getMove('down', invalidDirections);
     if (_.inRange(snakeHeadX + 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1) && snakeHeadY === otherSnakeHead.y) 
       move = getMove('right', invalidDirections);
     if (_.inRange(snakeHeadY + 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1) && snakeHeadX === otherSnakeHead.x) 
-      move = getMove('down', invalidDirections);
+      move = getMove('up', invalidDirections);
 
     taunt = 'I\'m coming for ya!';
   });
@@ -137,8 +137,8 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
       if (snakeHeadX < closestFood.x) possibleDirections.push('right')
       else possibleDirections.push('left');
 
-      if (snakeHeadY < closestFood.y) possibleDirections.push('down')
-      else possibleDirections.push('up');
+      if (snakeHeadY < closestFood.y) possibleDirections.push('up')
+      else possibleDirections.push('down');
 
       move = Math.random() < 0.5 ? getMove(possibleDirections[0], invalidDirections)  : getMove(possibleDirections[1], invalidDirections);
     }
