@@ -85,10 +85,14 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   // Check the directions that we can go without hitting a snake.
   _.each(snakeBodies, snakePoints => {
     _.each(snakePoints, point => {
-      if (snakeHeadX + 1 === point.x && snakeHeadY === point.y) invalidDirections.right = true;
-      if (snakeHeadX - 1 === point.x && snakeHeadY === point.y) invalidDirections.left = true;
-      if (snakeHeadY + 1 === point.y && snakeHeadX === point.x) invalidDirections.up = true;
-      if (snakeHeadY - 1 === point.y && snakeHeadX === point.x) invalidDirections.down = true;
+      if (snakeHeadX + 1 === point.x && snakeHeadY === point.y)
+        invalidDirections.right = true;
+      if (snakeHeadX - 1 === point.x && snakeHeadY === point.y)
+        invalidDirections.left = true;
+      if (snakeHeadY + 1 === point.y && snakeHeadX === point.x)
+        invalidDirections.up = true;
+      if (snakeHeadY - 1 === point.y && snakeHeadX === point.x)
+        invalidDirections.down = true;
     });
   });
 
@@ -108,20 +112,41 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   });
 
   // Don't go a way that can result in a collision with a larger snake.
-  /*let otherSnakeCoordinates = [];
+  let otherSnakeCoordinates = [];
   _.each(otherSnakes, otherSnake => {
     const otherSnakeBody = otherSnake.body.data;
     if (otherSnakeBody.length >= ownSnake.length) return;
 
     const otherSnakeHead = otherSnakeBody[0];
 
-    if (_.inRange(snakeHeadX - 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1))
+    if (
+      _.inRange(
+        snakeHeadX - 1,
+        otherSnakeHead.x - 1,
+        otherSnakeHead.x + 1 && snakeHeadY === otherSnakeHead.y
+      )
+    )
       invalidDirections.left = true;
-    if (_.inRange(snakeHeadY - 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1))
+    if (
+      _.inRange(
+        snakeHeadY - 1,
+        otherSnakeHead.y - 1,
+        otherSnakeHead.y + 1 && snakeHeadX === otherSnakeHead.x
+      )
+    )
       invalidDirections.down = true;
-    if (_.inRange(snakeHeadX + 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1))
+    if (
+      _.inRange(
+        snakeHeadX + 1,
+        otherSnakeHead.x - 1,
+        otherSnakeHead.x + 1 && snakeHeadY === otherSnakeHead.y
+      )
+    )
       invalidDirections.right = true;
-    if (_.inRange(snakeHeadY + 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1))
+    if (
+      _.inRange(snakeHeadY + 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1) &&
+      snakeHeadX === otherSnakeHead.x
+    )
       invalidDirections.up = true;
   });
 
@@ -156,7 +181,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
       taunt = "I'm coming for ya!";
     });
-  }*/
+  }
 
   // If there is a food pellet nearby then grab it.
   if (!move && closestFood) {
