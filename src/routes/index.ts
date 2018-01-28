@@ -70,10 +70,10 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
   // Check the directions that we can go without hitting a snake.
   _.each(occupiedCoordinates, coordinate => {
-    if (snakeHeadX + 1 === coordinate.x && snakeHeadY === coordinate.y) invalidDirections.right = true;
-    if (snakeHeadX - 1 === coordinate.x && snakeHeadY === coordinate.y) invalidDirections.left = true;
-    if (snakeHeadY + 1 === coordinate.y && snakeHeadX === coordinate.x) invalidDirections.up = true;
-    if (snakeHeadY - 1 === coordinate.y && snakeHeadX === coordinate.x) invalidDirections.down = true;
+    if (snakeHeadX + 1 === coordinate.x) invalidDirections.right = true;
+    if (snakeHeadX - 1 === coordinate.x) invalidDirections.left = true;
+    if (snakeHeadY + 1 === coordinate.y) invalidDirections.up = true;
+    if (snakeHeadY - 1 === coordinate.y) invalidDirections.down = true;
   });
 
   console.log(invalidDirections);
@@ -97,13 +97,13 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
     
     const otherSnakeHead = otherSnakeBody[0]; 
 
-    if (_.inRange(snakeHeadX - 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1) && snakeHeadY === otherSnakeHead.y) 
+    if (_.inRange(snakeHeadX - 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1)) 
       invalidDirections.left = true;
-    if (_.inRange(snakeHeadY - 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1) && snakeHeadX === otherSnakeHead.x) 
+    if (_.inRange(snakeHeadY - 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1)) 
       invalidDirections.up = true;
-    if (_.inRange(snakeHeadX + 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1) && snakeHeadY === otherSnakeHead.y) 
+    if (_.inRange(snakeHeadX + 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1)) 
       invalidDirections.right = true;
-    if (_.inRange(snakeHeadY + 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1) && snakeHeadX === otherSnakeHead.x) 
+    if (_.inRange(snakeHeadY + 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1)) 
       invalidDirections.down = true;
   });
 
