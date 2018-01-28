@@ -54,6 +54,9 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
   const snakeBody = ownSnake.body.data;
   const { snakeHeadX, snakeHeadY } = { snakeHeadX: snakeBody[0].x, snakeHeadY: snakeBody[0].y };
 
+  console.log(snakeHeadX);
+  console.log(snakeHeadY);
+
   // Check the snake's location in relation to the board.
   if (snakeHeadX === 0) invalidDirections.left = true;
   if (snakeHeadY === 0) invalidDirections.up = true;
@@ -62,17 +65,19 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
   // Opposition.
   const otherSnakes: Array<Snake> = _(requestData.snakes.data).omit({ id: ownSnake.id }).value();
-  const occupiedCoordinates: Array<Point> = _(requestData.snakes.data).map(snake => snake.body.data).union().value();
+  const snakeBodies: Array<Point> = _(requestData.snakes.data).map(snake => snake.body.data).union().value();
 
   console.log('### OCCUPIED COORDS');
-  console.log(occupiedCoordinates);
+  console.log(snakeBodies);
 
   // Check the directions that we can go without hitting a snake.
-  _.each(occupiedCoordinates, coordinate => {
-    if (snakeHeadX + 1 === coordinate.x) invalidDirections.right = true;
-    if (snakeHeadX - 1 === coordinate.x) invalidDirections.left = true;
-    if (snakeHeadY + 1 === coordinate.y) invalidDirections.down = true;
-    if (snakeHeadY - 1 === coordinate.y) invalidDirections.up = true;
+  _.each(snakeBodies, snakePoints => {
+    _.each(snakePoints, point => {
+      if (snakeHeadX + 1 === point.x) invalidDirections.right = true;
+      if (snakeHeadX - 1 === point.x) invalidDirections.left = true;
+      if (snakeHeadY + 1 === point.y) invalidDirections.down = true;
+      if (snakeHeadY - 1 === point.y) invalidDirections.up = true;
+    })
   });
 
   console.log(invalidDirections);
