@@ -67,9 +67,6 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     snakeHeadY: snakeBody[0].y
   };
 
-  console.log(snakeHeadX);
-  console.log(snakeHeadY);
-
   // Check the snake's location in relation to the board.
   if (snakeHeadX === 0) invalidDirections.left = true;
   if (snakeHeadY === 0) invalidDirections.down = true;
@@ -85,9 +82,6 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     .union()
     .value();
 
-  console.log("### OCCUPIED COORDS");
-  console.log(snakeBodies);
-
   // Check the directions that we can go without hitting a snake.
   _.each(snakeBodies, snakePoints => {
     _.each(snakePoints, point => {
@@ -98,11 +92,9 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     });
   });
 
-  console.log(invalidDirections);
-
   // Food
-  let closestFoodMoves = -1,
-    closestFood;
+  let closestFoodMoves = -1;
+  let closestFood;
   _.each(requestData.food.data, food => {
     const moveCount =
       Math.abs(snakeBody[0].x - food.x) + Math.abs(snakeBody[0].y - food.y);
@@ -110,11 +102,12 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     if (closestFoodMoves < moveCount) {
       closestFoodMoves = moveCount;
       closestFood = food;
+      console.log('### CLOSEST FOOD');
     }
   });
 
   // Don't go a way that can result in a collision with a larger snake.
-  let otherSnakeCoordinates = [];
+  /*let otherSnakeCoordinates = [];
   _.each(otherSnakes, otherSnake => {
     const otherSnakeBody = otherSnake.body.data;
     if (otherSnakeBody.length >= ownSnake.length) return;
@@ -162,7 +155,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
       taunt = "I'm coming for ya!";
     });
-  }
+  }*/
 
   // If there is a food pellet nearby then grab it.
   if (!move && closestFood) {
