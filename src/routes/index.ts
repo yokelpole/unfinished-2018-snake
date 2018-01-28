@@ -107,27 +107,8 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
       invalidDirections.down = true;
   });
 
-  // If there is a less powerful snake within range possibly stop it.
-  _.each(otherSnakes, otherSnake => {
-    const otherSnakeBody = otherSnake.body.data;
-    if (otherSnakeBody.length < snakeLength) return;
-
-    const otherSnakeHead = otherSnakeBody[0];
-
-    if (_.inRange(snakeHeadX - 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1) && snakeHeadY === otherSnakeHead.y) 
-      move = getMove('left', invalidDirections);
-    if (_.inRange(snakeHeadY - 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1) && snakeHeadX === otherSnakeHead.x) 
-      move = getMove('down', invalidDirections);
-    if (_.inRange(snakeHeadX + 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1) && snakeHeadY === otherSnakeHead.y) 
-      move = getMove('right', invalidDirections);
-    if (_.inRange(snakeHeadY + 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1) && snakeHeadX === otherSnakeHead.x) 
-      move = getMove('up', invalidDirections);
-
-    taunt = 'I\'m coming for ya!';
-  });
-
   // If there is a food pellet nearby then grab it.
-  if (!move && closestFood) {
+  if (closestFood) {
     if (snakeHeadX === closestFood.x) move = snakeHeadY < closestFood.y ? getMove('up', invalidDirections) : getMove('down', invalidDirections);
     if (snakeHeadY === closestFood.y) move = snakeHeadX < closestFood.x ? getMove('right', invalidDirections) : getMove('left', invalidDirections);
     
@@ -144,6 +125,27 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
     }
 
     taunt = 'I\'m always hungry!';
+  }
+
+  // If there is a less powerful snake within range possibly stop it.
+  if (!move) {
+    _.each(otherSnakes, otherSnake => {
+      const otherSnakeBody = otherSnake.body.data;
+      if (otherSnakeBody.length < snakeLength) return;
+
+      const otherSnakeHead = otherSnakeBody[0];
+
+      if (_.inRange(snakeHeadX - 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1) && snakeHeadY === otherSnakeHead.y) 
+        move = getMove('left', invalidDirections);
+      if (_.inRange(snakeHeadY - 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1) && snakeHeadX === otherSnakeHead.x) 
+        move = getMove('down', invalidDirections);
+      if (_.inRange(snakeHeadX + 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1) && snakeHeadY === otherSnakeHead.y) 
+        move = getMove('right', invalidDirections);
+      if (_.inRange(snakeHeadY + 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1) && snakeHeadX === otherSnakeHead.x) 
+        move = getMove('up', invalidDirections);
+
+      taunt = 'I\'m coming for ya!';
+    });
   }
 
   // For some reason we haven't settled on a move - randomly pick one direction that is allowed.
