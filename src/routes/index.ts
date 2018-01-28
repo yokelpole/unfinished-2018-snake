@@ -93,21 +93,20 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   });
 
   // Food
-  let closestFoodMoves = -1;
+  let closestFoodMoves;
   let closestFood;
   _.each(requestData.food.data, food => {
     const moveCount =
       Math.abs(snakeBody[0].x - food.x) + Math.abs(snakeBody[0].y - food.y);
 
-    if (closestFoodMoves < moveCount) {
+    if (closestFoodMoves > moveCount || closestFoodMoves === undefined) {
       closestFoodMoves = moveCount;
       closestFood = food;
-      console.log('### CLOSEST FOOD');
     }
   });
 
   // Don't go a way that can result in a collision with a larger snake.
-  /*let otherSnakeCoordinates = [];
+  let otherSnakeCoordinates = [];
   _.each(otherSnakes, otherSnake => {
     const otherSnakeBody = otherSnake.body.data;
     if (otherSnakeBody.length >= ownSnake.length) return;
@@ -124,7 +123,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
       invalidDirections.up = true;
   });
 
-  // If there is a less powerful snake within range possibly stop it.
+  // If there is a less powerful snake within range try to stop it.
   if (!move) {
     _.each(otherSnakes, otherSnake => {
       const otherSnakeBody = otherSnake.body.data;
@@ -155,7 +154,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
       taunt = "I'm coming for ya!";
     });
-  }*/
+  }
 
   // If there is a food pellet nearby then grab it.
   if (!move && closestFood) {
