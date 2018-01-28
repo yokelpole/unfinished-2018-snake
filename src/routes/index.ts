@@ -3,7 +3,8 @@ import * as _ from "lodash";
 import {
   StartRequest, MoveRequest, StartResponse, MoveResponse, MoveResponseData,
   StartResponseData,
-  Snake
+  Snake,
+  Point
 } from "../types/battlesnake"
 
 interface BattleSnakeRouter {
@@ -29,8 +30,8 @@ router.post('/start', (req: StartRequest, res: StartResponse): StartResponse => 
   return res.json(responseData);
 });
 
-function howManyMovesToFood(snake: Snake, food: Array<number>) {
-  return Math.abs(snake.coords[0]['x'] - food[0]) + Math.abs(snake.coords[0]['y'] - food[1]);
+function howManyMovesToFood(snake: Snake, food: Point) {
+  return
 }
 
 function getMove(direction, invalidDirections: {}) {
@@ -43,8 +44,6 @@ function getMove(direction, invalidDirections: {}) {
 router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
   const requestData = req.body;
   let move, taunt;
-
-  console.log(JSON.stringify(requestData));
 
   // Initialize variables that store where the snake can go.
   const invalidDirections = {
@@ -68,9 +67,7 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
   // Opposition.
   const otherSnakes: Array<Snake> = _(requestData.snakes.data).omit({ id: ownSnake.id }).value();
-  const occupiedCoordinates: Array<[number, number]> = _(requestData.snakes.data).map(snake => snake.body.data).union().value();
-
-  console.log('### GOT HERE');
+  const occupiedCoordinates: Array<Point> = _(requestData.snakes.data).map(snake => snake.body.data).union().value();
 
   // Check the directions that we can go without hitting a snake.
   _.each(occupiedCoordinates, coordinate => {
@@ -83,7 +80,7 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
   // Food
   let closestFoodMoves = -1, closestFood;
   _.each(requestData.food.data, food => {
-    const moveCount = howManyMovesToFood(ownSnake, food);
+    const moveCount =  Math.abs(snakeBody[0].x - food.x) + Math.abs(snakeBody[0].y - food.y);
 
     if (closestFoodMoves < moveCount) {
       closestFoodMoves = moveCount;
@@ -94,9 +91,10 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
   // Don't go a way that can result in a collision with a larger snake.
   let otherSnakeCoordinates = [];
   _.each(otherSnakes, otherSnake => {
-    if (otherSnake.coords.length >= snakeLength) return;
+    const otherSnakeBody = otherSnake.body.data;
+    if (otherSnakeBody.length >= snakeLength) return;
     
-    const otherSnakeHead = otherSnake.coords[0]; 
+    const otherSnakeHead = otherSnakeBody[0]; 
 
     if (_.inRange(snakeHeadX - 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1)) invalidDirections.left = true;
     if (_.inRange(snakeHeadY - 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1)) invalidDirections.up = true;
@@ -106,9 +104,10 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
   // If there is a less powerful snake within range possibly stop it.
   _.each(otherSnakes, otherSnake => {
-    if (otherSnake.coords.length < snakeLength) return;
+    const otherSnakeBody = otherSnake.body.data;
+    if (otherSnakeBody.length < snakeLength) return;
 
-    const otherSnakeHead = otherSnake.coords[0];
+    const otherSnakeHead = otherSnakeBody[0];
 
     if (_.inRange(snakeHeadX - 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1)) move = getMove('left', invalidDirections);
     if (_.inRange(snakeHeadY - 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1)) move = getMove('up', invalidDirections);
