@@ -69,6 +69,7 @@ export interface Snake {
     name: string;
     taunt: string;
     health_points: number;
+    length: number;
     body: {
         data: Array<Point>,
     };

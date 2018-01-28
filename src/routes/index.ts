@@ -52,7 +52,6 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
   // Own snake data.
   const ownSnake: Snake = requestData.you;
   const snakeBody = ownSnake.body.data;
-  const snakeLength = snakeBody.length;
   const { snakeHeadX, snakeHeadY } = { snakeHeadX: snakeBody[0].x, snakeHeadY: snakeBody[0].y };
 
   // Check the snake's location in relation to the board.
@@ -72,8 +71,8 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
   _.each(occupiedCoordinates, coordinate => {
     if (snakeHeadX + 1 === coordinate.x) invalidDirections.right = true;
     if (snakeHeadX - 1 === coordinate.x) invalidDirections.left = true;
-    if (snakeHeadY + 1 === coordinate.y) invalidDirections.up = true;
-    if (snakeHeadY - 1 === coordinate.y) invalidDirections.down = true;
+    if (snakeHeadY + 1 === coordinate.y) invalidDirections.down = true;
+    if (snakeHeadY - 1 === coordinate.y) invalidDirections.up = true;
   });
 
   console.log(invalidDirections);
@@ -93,7 +92,7 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
   let otherSnakeCoordinates = [];
   _.each(otherSnakes, otherSnake => {
     const otherSnakeBody = otherSnake.body.data;
-    if (otherSnakeBody.length >= snakeLength) return;
+    if (otherSnakeBody.length >= ownSnake.length) return;
     
     const otherSnakeHead = otherSnakeBody[0]; 
 
@@ -131,7 +130,7 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
   if (!move) {
     _.each(otherSnakes, otherSnake => {
       const otherSnakeBody = otherSnake.body.data;
-      if (otherSnakeBody.length < snakeLength) return;
+      if (otherSnakeBody.length < ownSnake.length) return;
 
       const otherSnakeHead = otherSnakeBody[0];
 
