@@ -35,9 +35,11 @@ export interface MoveRequestData {
     height: number;
     width: number;
     turn: number;
-    you: string;
-    food: Point[];
-    snakes: Snake[];
+    you: Snake;
+    food: { data: Point[]; };
+    snakes: {
+        data: Snake[];
+    };
 }
 
 interface MoveSend {
@@ -56,12 +58,19 @@ export interface MoveResponseData {
     taunt?: string;
 }
 
-export type Point = [number, number];
+export type Point = {
+    x: number,
+    y: number,
+    object: string,
+};
 
 export interface Snake {
     id: string;
     name: string;
     taunt: string;
     health_points: number;
-    coords: Point[];
+    body: {
+        data: Array<Point>,
+    };
+    coords: Point[];        
 }
