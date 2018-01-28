@@ -158,12 +158,15 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
   // If there is a food pellet nearby then grab it.
   if (!move && closestFood) {
+    console.log(snakeHeadX);
+    console.log(snakeHeadY);
+    console.log(closestFood);
     if (snakeHeadX === closestFood.x)
       move =
         snakeHeadY < closestFood.y
           ? getMove("up", invalidDirections)
           : getMove("down", invalidDirections);
-    if (snakeHeadY === closestFood.y)
+    else if (snakeHeadY === closestFood.y)
       move =
         snakeHeadX < closestFood.x
           ? getMove("right", invalidDirections)
@@ -174,6 +177,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
       if (snakeHeadX < closestFood.x) possibleDirections.push("right");
       else possibleDirections.push("left");
+      
 
       if (snakeHeadY < closestFood.y) possibleDirections.push("up");
       else possibleDirections.push("down");
