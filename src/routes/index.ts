@@ -46,7 +46,7 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
   let move, taunt;
 
   console.log('### REQUEST DATA');
-  console.log(requestData);
+  console.log(JSON.stringify(requestData));
 
   // Initialize variables that store where the snake can go.
   const invalidDirections = {
