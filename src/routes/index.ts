@@ -175,7 +175,9 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   }
 
   // If there is a food pellet nearby then grab it.
-  if (!move && closestFood) {
+  const largestOpponent = _.maxBy(otherSnakes, 'length');
+
+  if (!move && closestFood && ownSnake.health <= 25 || largestOpponent.length > ownSnake.length) {
     console.log(snakeHeadX);
     console.log(snakeHeadY);
     console.log(closestFood);
