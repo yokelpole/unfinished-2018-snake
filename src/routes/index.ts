@@ -77,7 +77,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
   // Opposition.
   const otherSnakes: Array<Snake> = _(requestData.snakes.data)
-    .omit({ id: ownSnake.id })
+    .reject({ id: ownSnake.id })
     .value();
   const snakeBodies: Array<Point> = _(requestData.snakes.data)
     .map(snake => snake.body.data)
@@ -175,7 +175,11 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   }
 
   // If there is a food pellet nearby then grab it.
-  const largestOpponent = _.maxBy(otherSnakes, 'length');
+  console.log('### SNAKY BOI');
+  console.log(otherSnakes);
+  const largestOpponent = _.maxBy(otherSnakes, snake => snake.length);
+  console.log('### BIG BOYE');
+  console.log(largestOpponent);
 
   if (!move && closestFood && ownSnake.health <= 25 || largestOpponent.length > ownSnake.length) {
     console.log(snakeHeadX);
