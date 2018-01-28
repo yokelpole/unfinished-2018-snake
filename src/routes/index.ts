@@ -34,7 +34,15 @@ function howManyMovesToFood(snake: Snake, food: Array<number>) {
 }
 
 function getMove(direction, invalidDirections: {}) {
+  console.log('### GETMOVE CHECK');
+  console.log(direction);
+  console.log(invalidDirections);
+
   if (invalidDirections[direction]) return undefined;
+
+  console.log('### IN GET MOVE');
+  console.log(direction);
+  console.log(invalidDirections);
 
   return direction;
 }
@@ -129,7 +137,7 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
       if (snakeHeadY < closestFood[1]) possibleDirections.push('down')
       else possibleDirections.push('up');
 
-      move = Math.random() < 0.5 ? possibleDirections[0]  : possibleDirections[1];
+      move = Math.random() < 0.5 ? getMove(possibleDirections[0], invalidDirections)  : getMove(possibleDirections[1], invalidDirections);
     }
 
     taunt = 'I\'m always hungry!';
@@ -149,7 +157,7 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
     taunt = 'This is the end for me!'
   }
-
+  
   // Response data
   const responseData: MoveResponseData = { move, taunt };
   return res.json(responseData);
