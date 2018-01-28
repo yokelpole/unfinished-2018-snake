@@ -72,9 +72,9 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
   // Check the snake's location in relation to the board.
   if (snakeHeadX === 0) invalidDirections.left = true;
-  if (snakeHeadY === 0) invalidDirections.up = true;
+  if (snakeHeadY === 0) invalidDirections.down = true;
   if (snakeHeadX + 1 === requestData.width) invalidDirections.right = true;
-  if (snakeHeadY + 1 === requestData.height) invalidDirections.down = true;
+  if (snakeHeadY + 1 === requestData.height) invalidDirections.up = true;
 
   // Opposition.
   const otherSnakes: Array<Snake> = _(requestData.snakes.data)
@@ -93,8 +93,8 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     _.each(snakePoints, point => {
       if (snakeHeadX + 1 === point.x) invalidDirections.right = true;
       if (snakeHeadX - 1 === point.x) invalidDirections.left = true;
-      if (snakeHeadY + 1 === point.y) invalidDirections.down = true;
-      if (snakeHeadY - 1 === point.y) invalidDirections.up = true;
+      if (snakeHeadY + 1 === point.y) invalidDirections.up = true;
+      if (snakeHeadY - 1 === point.y) invalidDirections.down = true;
     });
   });
 
@@ -124,11 +124,11 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     if (_.inRange(snakeHeadX - 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1))
       invalidDirections.left = true;
     if (_.inRange(snakeHeadY - 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1))
-      invalidDirections.up = true;
+      invalidDirections.down = true;
     if (_.inRange(snakeHeadX + 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1))
       invalidDirections.right = true;
     if (_.inRange(snakeHeadY + 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1))
-      invalidDirections.down = true;
+      invalidDirections.up = true;
   });
 
   // If there is a less powerful snake within range possibly stop it.
@@ -206,7 +206,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   }
 
   // If we don't have a move because no directions are valid then pick one randomly and post a suicide message.
-  if (!move && _.every(invalidDirections, true)) {
+  if (!move && _.every(invalidDirections, _.isTrue)) {
     move = ["up", "down", "left", "right"][Math.floor(Math.random() * 4) + 1];
 
     taunt = "This is the end for me!";
