@@ -70,8 +70,8 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   // Check the snake's location in relation to the board.
   if (snakeHeadX === 0) invalidDirections.left = true;
   if (snakeHeadY === 0) invalidDirections.down = true;
-  if (snakeHeadX + 1 === requestData.width) invalidDirections.right = true;
-  if (snakeHeadY + 1 === requestData.height) invalidDirections.up = true;
+  if (snakeHeadX === requestData.width) invalidDirections.right = true;
+  if (snakeHeadY === requestData.height) invalidDirections.up = true;
 
   // Opposition.
   const otherSnakes: Array<Snake> = _(requestData.snakes.data)
