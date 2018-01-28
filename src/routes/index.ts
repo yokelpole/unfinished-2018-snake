@@ -30,10 +30,6 @@ router.post('/start', (req: StartRequest, res: StartResponse): StartResponse => 
   return res.json(responseData);
 });
 
-function howManyMovesToFood(snake: Snake, food: Point) {
-  return
-}
-
 function getMove(direction, invalidDirections: {}) {
   if (invalidDirections[direction]) return undefined;
 
@@ -77,6 +73,8 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
     if (snakeHeadY - 1 === coordinate.y) invalidDirections.up = true;
   });
 
+  console.log(invalidDirections);
+
   // Food
   let closestFoodMoves = -1, closestFood;
   _.each(requestData.food.data, food => {
@@ -108,6 +106,7 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
     if (otherSnakeBody.length < snakeLength) return;
 
     const otherSnakeHead = otherSnakeBody[0];
+    console.log(otherSnakeHead);
 
     if (_.inRange(snakeHeadX - 1, otherSnakeHead.x - 1, otherSnakeHead.x + 1)) move = getMove('left', invalidDirections);
     if (_.inRange(snakeHeadY - 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1)) move = getMove('up', invalidDirections);
