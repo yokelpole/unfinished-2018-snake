@@ -41,12 +41,7 @@ router.post(
 );
 
 function getMove(direction, invalidDirections: {}) {
-  console.log('### SETTING MOVE');
-  console.log(direction);
-  console.log(invalidDirections);
   if (invalidDirections[direction]) return undefined;
-
-  console.log('### WAS NOT INVALID');
 
   return direction;
 }
@@ -63,6 +58,8 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     left: false,
     right: false
   };
+
+  console.log(requestData);
 
   // Own snake data.
   const ownSnake: Snake = requestData.you;
