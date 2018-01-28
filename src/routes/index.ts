@@ -41,7 +41,12 @@ router.post(
 );
 
 function getMove(direction, invalidDirections: {}) {
+  console.log('### SETTING MOVE');
+  console.log(direction);
+  console.log(invalidDirections);
   if (invalidDirections[direction]) return undefined;
+
+  console.log('### WAS NOT INVALID');
 
   return direction;
 }
@@ -95,8 +100,6 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
         invalidDirections.down = true;
     });
   });
-
-  console.log(invalidDirections);
 
   // Food
   let closestFoodMoves;
