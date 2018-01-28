@@ -85,12 +85,14 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   // Check the directions that we can go without hitting a snake.
   _.each(snakeBodies, snakePoints => {
     _.each(snakePoints, point => {
-      if (snakeHeadX + 1 === point.x) invalidDirections.right = true;
-      if (snakeHeadX - 1 === point.x) invalidDirections.left = true;
-      if (snakeHeadY + 1 === point.y) invalidDirections.up = true;
-      if (snakeHeadY - 1 === point.y) invalidDirections.down = true;
+      if (snakeHeadX + 1 === point.x && snakeHeadY === point.y) invalidDirections.right = true;
+      if (snakeHeadX - 1 === point.x && snakeHeadY === point.y) invalidDirections.left = true;
+      if (snakeHeadY + 1 === point.y && snakeHeadX === point.x) invalidDirections.up = true;
+      if (snakeHeadY - 1 === point.y && snakeHeadX === point.x) invalidDirections.down = true;
     });
   });
+
+  console.log(invalidDirections);
 
   // Food
   let closestFoodMoves;
@@ -106,7 +108,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   });
 
   // Don't go a way that can result in a collision with a larger snake.
-  let otherSnakeCoordinates = [];
+  /*let otherSnakeCoordinates = [];
   _.each(otherSnakes, otherSnake => {
     const otherSnakeBody = otherSnake.body.data;
     if (otherSnakeBody.length >= ownSnake.length) return;
@@ -154,30 +156,37 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
       taunt = "I'm coming for ya!";
     });
-  }
+  }*/
 
   // If there is a food pellet nearby then grab it.
   if (!move && closestFood) {
     console.log(snakeHeadX);
     console.log(snakeHeadY);
     console.log(closestFood);
-    if (snakeHeadX === closestFood.x)
+    if (snakeHeadX === closestFood.x) {
       move =
         snakeHeadY < closestFood.y
           ? getMove("up", invalidDirections)
           : getMove("down", invalidDirections);
-    else if (snakeHeadY === closestFood.y)
+    } else if (snakeHeadY === closestFood.y) {
       move =
         snakeHeadX < closestFood.x
           ? getMove("right", invalidDirections)
           : getMove("left", invalidDirections);
+    }
+
+    console.log("### MOVE");
+    console.log(snakeHeadY === closestFood.y);
+    console.log(snakeHeadX < closestFood.x);
+    console.log(snakeHeadY);
+    console.log(closestFood.y);
+    console.log(move);
 
     if (!move) {
       let possibleDirections = [];
 
       if (snakeHeadX < closestFood.x) possibleDirections.push("right");
       else possibleDirections.push("left");
-      
 
       if (snakeHeadY < closestFood.y) possibleDirections.push("up");
       else possibleDirections.push("down");
