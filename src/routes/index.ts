@@ -65,6 +65,9 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
   const otherSnakes: Array<Snake> = _(requestData.snakes.data).omit({ id: ownSnake.id }).value();
   const occupiedCoordinates: Array<Point> = _(requestData.snakes.data).map(snake => snake.body.data).union().value();
 
+  console.log('### OCCUPIED COORDS');
+  console.log(occupiedCoordinates);
+
   // Check the directions that we can go without hitting a snake.
   _.each(occupiedCoordinates, coordinate => {
     if (snakeHeadX + 1 === coordinate.x) invalidDirections.right = true;
@@ -120,7 +123,6 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
   if (!move && closestFood) {
     if (snakeHeadX === closestFood.x) move = snakeHeadY < closestFood.x ? getMove('down', invalidDirections) : getMove('up', invalidDirections);
     if (snakeHeadY === closestFood.y) move = snakeHeadX < closestFood.y ? getMove('right', invalidDirections) : getMove('left', invalidDirections);
-    
     
     if (!move) {
       let possibleDirections = [];
