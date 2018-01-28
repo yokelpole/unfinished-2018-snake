@@ -104,7 +104,7 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
   });
 
   // If there is a less powerful snake within range possibly stop it.
-  _.each(otherSnakes, otherSnake => {
+  /*_.each(otherSnakes, otherSnake => {
     const otherSnakeBody = otherSnake.body.data;
     if (otherSnakeBody.length < snakeLength) return;
 
@@ -117,7 +117,7 @@ router.post('/move', (req: MoveRequest, res: MoveResponse): MoveResponse => {
     if (_.inRange(snakeHeadY + 1, otherSnakeHead.y - 1, otherSnakeHead.y + 1)) move = getMove('down', invalidDirections);
 
     taunt = 'I\'m coming for ya!';
-  });
+  });*/
 
   // If there is a food pellet nearby then grab it.
   if (!move && closestFood) {
