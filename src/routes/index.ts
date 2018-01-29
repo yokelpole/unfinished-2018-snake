@@ -141,8 +141,6 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   // Initialize variables that store where the snake can go.
   let invalidDirections: InvalidDirections = getNewInvalidDirections();
 
-  console.log(JSON.stringify(req.body));
-
   // Own snake data.
   const ownSnake: Snake = requestData.you;
   const snakeBody = ownSnake.body.data;
@@ -178,9 +176,6 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     invalidDirections
   );
 
-  console.log('### INVALID DIRECTIONS');
-  console.log(invalidDirections);
-
   // If we MUST eat, then recalculate to allow for eating food.
   if (_.every(invalidDirections, _.isTrue)) {
     invalidDirections = getNewInvalidDirections();
@@ -192,8 +187,6 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
       invalidDirections
     );
     checkNextMoves(snakeHead, snakeBodies, width, height, invalidDirections);
-    console.log('### RECALCULATED INVALID DIRECTIONS');
-    console.log(invalidDirections);
   }
 
   // Food
@@ -288,10 +281,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
       invalidDirections
     );
     checkNextMoves(snakeHead, snakeBodies, width, height, invalidDirections);
-
-    console.log('### FOOD RECALCULATED');
-    console.log(invalidDirections);
-
+    
     if (snakeHead.x === closestFood.x) {
       move =
         snakeHead.y < closestFood.y
