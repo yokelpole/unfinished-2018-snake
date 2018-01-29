@@ -50,17 +50,11 @@ function getMove(
   return direction;
 }
 
-function getCollisionPossibilities(
+function setCollisionPossibilities(
   snakeHead: Point,
-  snakeBodies: Array<Point>
-): InvalidDirections {
-  let invalidDirections: InvalidDirections = {
-    up: undefined,
-    left: undefined,
-    right: undefined,
-    down: undefined
-  };
-
+  snakeBodies: Array<Point>,
+  invalidDirections: InvalidDirections
+) {
   _.each(snakeBodies, snakePoints => {
     _.each(snakePoints, point => {
       if (snakeHead.x + 1 === point.x && snakeHead.y === point.y)
@@ -73,8 +67,6 @@ function getCollisionPossibilities(
         invalidDirections.up = true;
     });
   });
-
-  return invalidDirections;
 }
 
 // Handle POST request to '/move'
@@ -111,10 +103,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     .value();
 
   // Assign the directions that we can go without hitting a snake.
-  _.extend(
-    invalidDirections,
-    getCollisionPossibilities(snakeHead, snakeBodies)
-  );
+  setCollisionPossibilities(snakeHead, snakeBodies, invalidDirections);
 
   // Make sure the next move won't result in a dead end.
   // TODO: Make this check a few moves in advance and check for where the snake's tail will be.
@@ -131,12 +120,17 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
         direction === "up" || direction === "down"
           ? snakeHead.y + deviation
           : snakeHead.y,
-      object: 'point',
+      object: "point"
     };
-    const newInvalidDirections = getCollisionPossibilities(
-      checkedPoint,
-      snakeBodies
-    );
+
+    const newInvalidDirections: InvalidDirections = {
+      up: false,
+      down: false,
+      left: false,
+      right: false
+    };
+    
+    setCollisionPossibilities(checkedPoint, snakeBodies, newInvalidDirections);
 
     if (_.every(newInvalidDirections, _.isTrue)) {
       invalidDirections[direction] = true;
