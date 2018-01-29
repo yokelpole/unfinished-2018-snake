@@ -41,6 +41,15 @@ router.post(
   }
 );
 
+function getNewInvalidDirections(): InvalidDirections {
+  return {
+    up: false,
+    down: false,
+    left: false,
+    right: false
+  };
+}
+
 function getMove(
   direction: string,
   invalidDirections: InvalidDirections
@@ -69,18 +78,45 @@ function setCollisionPossibilities(
   });
 }
 
+// TODO: Make this check a few moves in advance and check for where the snake's tail will be.
+function checkNextMoves(snakeHead: Point, otherBodies: Array<Point>, invalidDirections) {
+  _.each(_.keys(invalidDirections), direction => {
+    if (invalidDirections[direction]) return;
+
+    const deviation = direction === "up" || direction === "left" ? -1 : +1;
+    const checkedPoint: Point = {
+      x:
+        direction === "left" || direction === "right"
+          ? snakeHead.x + deviation
+          : snakeHead.x,
+      y:
+        direction === "up" || direction === "down"
+          ? snakeHead.y + deviation
+          : snakeHead.y,
+      object: "point"
+    };
+
+    const newInvalidDirections: InvalidDirections = {
+      up: false,
+      down: false,
+      left: false,
+      right: false
+    };
+
+    setCollisionPossibilities(checkedPoint, otherBodies, newInvalidDirections);
+
+    if (_.every(newInvalidDirections, _.isTrue)) invalidDirections[direction] = true;
+  });
+
+}
+
 // Handle POST request to '/move'
 router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   const requestData = req.body;
   let move, taunt;
 
   // Initialize variables that store where the snake can go.
-  const invalidDirections: InvalidDirections = {
-    up: false,
-    down: false,
-    left: false,
-    right: false
-  };
+  let invalidDirections: InvalidDirections = getNewInvalidDirections();
 
   console.log(JSON.stringify(req.body));
 
@@ -107,39 +143,14 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
   // Assign the directions that we can go without hitting a snake or food.
   setCollisionPossibilities(snakeHead, snakeBodiesAndFood, invalidDirections);
+  checkNextMoves(snakeHead, snakeBodiesAndFood, invalidDirections);
 
   // If we MUST eat, then recalculate to allow for eating food.
-  if (_.every(invalidDirections, _.isTrue)) setCollisionPossibilities(snakeHead, snakeBodies, invalidDirections);
-
-  // Make sure the next move won't result in a dead end.
-  // TODO: Make this check a few moves in advance and check for where the snake's tail will be.
-  _.each(_.keys(invalidDirections), direction => {
-    if (invalidDirections[direction]) return;
-
-    const deviation = direction === "up" || direction === "left" ? -1 : +1;
-    const checkedPoint: Point = {
-      x:
-        direction === "left" || direction === "right"
-          ? snakeHead.x + deviation
-          : snakeHead.x,
-      y:
-        direction === "up" || direction === "down"
-          ? snakeHead.y + deviation
-          : snakeHead.y,
-      object: "point"
-    };
-
-    const newInvalidDirections: InvalidDirections = {
-      up: false,
-      down: false,
-      left: false,
-      right: false
-    };
-
-    setCollisionPossibilities(checkedPoint, snakeBodies, newInvalidDirections);
-
-    if (_.every(newInvalidDirections, _.isTrue)) invalidDirections[direction] = true;
-  });
+  if (_.every(invalidDirections, _.isTrue)) {
+    invalidDirections = getNewInvalidDirections();
+    setCollisionPossibilities(snakeHead, snakeBodies, invalidDirections);
+    checkNextMoves(snakeHead, snakeBodies, invalidDirections);
+  }
 
   // Food
   let closestFoodMoves;
