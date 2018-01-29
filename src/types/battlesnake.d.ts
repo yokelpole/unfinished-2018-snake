@@ -64,6 +64,13 @@ export type Point = {
     object: string,
 };
 
+export interface InvalidDirections {
+    up: Boolean,
+    down: Boolean,
+    left: Boolean,
+    right: Boolean,
+}
+
 export interface Snake {
     id: string;
     name: string;

@@ -8,7 +8,8 @@ import {
   MoveResponseData,
   StartResponseData,
   Snake,
-  Point
+  Point,
+  InvalidDirections
 } from "../types/battlesnake";
 
 interface BattleSnakeRouter {
@@ -40,10 +41,40 @@ router.post(
   }
 );
 
-function getMove(direction, invalidDirections: {}) {
+function getMove(
+  direction: string,
+  invalidDirections: InvalidDirections
+): string {
   if (invalidDirections[direction]) return undefined;
 
   return direction;
+}
+
+function getCollisionPossibilities(
+  snakeHead: Point,
+  snakeBodies: Array<Point>
+): InvalidDirections {
+  let invalidDirections: InvalidDirections = {
+    up: undefined,
+    left: undefined,
+    right: undefined,
+    down: undefined
+  };
+
+  _.each(snakeBodies, snakePoints => {
+    _.each(snakePoints, point => {
+      if (snakeHead.x + 1 === point.x && snakeHead.y === point.y)
+        invalidDirections.right = true;
+      if (snakeHead.x - 1 === point.x && snakeHead.y === point.y)
+        invalidDirections.left = true;
+      if (snakeHead.y + 1 === point.y && snakeHead.x === point.x)
+        invalidDirections.down = true;
+      if (snakeHead.y - 1 === point.y && snakeHead.y === point.x)
+        invalidDirections.up = true;
+    });
+  });
+
+  return invalidDirections;
 }
 
 // Handle POST request to '/move'
@@ -52,28 +83,23 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   let move, taunt;
 
   // Initialize variables that store where the snake can go.
-  const invalidDirections = {
+  const invalidDirections: InvalidDirections = {
     up: false,
     down: false,
     left: false,
     right: false
   };
 
-  console.log(JSON.stringify(requestData));
-
   // Own snake data.
   const ownSnake: Snake = requestData.you;
   const snakeBody = ownSnake.body.data;
-  const { snakeHeadX, snakeHeadY } = {
-    snakeHeadX: snakeBody[0].x,
-    snakeHeadY: snakeBody[0].y
-  };
+  const snakeHead: Point = snakeBody[0];
 
   // Check the snake's location in relation to the board.
-  if (snakeHeadX === 0) invalidDirections.left = true;
-  if (snakeHeadY === 0) invalidDirections.up = true;
-  if (snakeHeadX + 1 === requestData.width) invalidDirections.right = true;
-  if (snakeHeadY + 1 === requestData.height) invalidDirections.down = true;
+  if (snakeHead.x === 0) invalidDirections.left = true;
+  if (snakeHead.y === 0) invalidDirections.up = true;
+  if (snakeHead.x + 1 === requestData.width) invalidDirections.right = true;
+  if (snakeHead.y + 1 === requestData.height) invalidDirections.down = true;
 
   // Opposition.
   const otherSnakes: Array<Snake> = _(requestData.snakes.data)
@@ -84,18 +110,37 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     .union()
     .value();
 
-  // Check the directions that we can go without hitting a snake.
-  _.each(snakeBodies, snakePoints => {
-    _.each(snakePoints, point => {
-      if (snakeHeadX + 1 === point.x && snakeHeadY === point.y)
-        invalidDirections.right = true;
-      if (snakeHeadX - 1 === point.x && snakeHeadY === point.y)
-        invalidDirections.left = true;
-      if (snakeHeadY + 1 === point.y && snakeHeadX === point.x)
-        invalidDirections.down = true;
-      if (snakeHeadY - 1 === point.y && snakeHeadX === point.x)
-        invalidDirections.up = true;
-    });
+  // Assign the directions that we can go without hitting a snake.
+  _.extend(
+    invalidDirections,
+    getCollisionPossibilities(snakeHead, snakeBodies)
+  );
+
+  // Make sure the next move won't result in a dead end.
+  // TODO: Make this check a few moves in advance and check for where the snake's tail will be.
+  _.each(_.keys(invalidDirections), direction => {
+    if (invalidDirections[direction]) return;
+
+    const deviation = direction === "up" || direction === "left" ? -1 : +1;
+    const checkedPoint: Point = {
+      x:
+        direction === "left" || direction === "right"
+          ? snakeHead.x + deviation
+          : snakeHead.x,
+      y:
+        direction === "up" || direction === "down"
+          ? snakeHead.y + deviation
+          : snakeHead.y,
+      object: 'point',
+    };
+    const newInvalidDirections = getCollisionPossibilities(
+      checkedPoint,
+      snakeBodies
+    );
+
+    if (_.every(newInvalidDirections, _.isTrue)) {
+      invalidDirections[direction] = true;
+    }
   });
 
   // Food
@@ -120,23 +165,23 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     const otherSnakeHead = otherSnakeBody[0];
 
     if (
-      snakeHeadX - 1 === otherSnakeHead.x + 1 &&
-      snakeHeadY === otherSnakeHead.y
+      snakeHead.x - 1 === otherSnakeHead.x + 1 &&
+      snakeHead.y === otherSnakeHead.y
     )
       invalidDirections.left = true;
     if (
-      snakeHeadY - 1 === otherSnakeHead.y + 1 &&
-      snakeHeadX === otherSnakeHead.x
+      snakeHead.y - 1 === otherSnakeHead.y + 1 &&
+      snakeHead.x === otherSnakeHead.x
     )
       invalidDirections.up = true;
     if (
-      snakeHeadX + 1 === otherSnakeHead.x - 1 &&
-      snakeHeadY === otherSnakeHead.y
+      snakeHead.x + 1 === otherSnakeHead.x - 1 &&
+      snakeHead.y === otherSnakeHead.y
     )
       invalidDirections.right = true;
     if (
-      snakeHeadY + 1 === otherSnakeHead.y - 1 &&
-      snakeHeadX === otherSnakeHead.x
+      snakeHead.y + 1 === otherSnakeHead.y - 1 &&
+      snakeHead.x === otherSnakeHead.x
     )
       invalidDirections.down = true;
   });
@@ -150,23 +195,23 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
       const otherSnakeHead = otherSnakeBody[0];
 
       if (
-        snakeHeadX - 1 === otherSnakeHead.x + 1 &&
-        snakeHeadY === otherSnakeHead.y
+        snakeHead.x - 1 === otherSnakeHead.x + 1 &&
+        snakeHead.y === otherSnakeHead.y
       )
         move = getMove("left", invalidDirections);
       if (
-        snakeHeadY - 1 === otherSnakeHead.y + 1 &&
-        snakeHeadX === otherSnakeHead.x
+        snakeHead.y - 1 === otherSnakeHead.y + 1 &&
+        snakeHead.x === otherSnakeHead.x
       )
         move = getMove("up", invalidDirections);
       if (
-        snakeHeadX + 1 === otherSnakeHead.x - 1 &&
-        snakeHeadY === otherSnakeHead.y
+        snakeHead.x + 1 === otherSnakeHead.x - 1 &&
+        snakeHead.y === otherSnakeHead.y
       )
         move = getMove("right", invalidDirections);
       if (
-        snakeHeadY + 1 === otherSnakeHead.y - 1 &&
-        snakeHeadX === otherSnakeHead.x
+        snakeHead.y + 1 === otherSnakeHead.y - 1 &&
+        snakeHead.x === otherSnakeHead.x
       )
         move = getMove("down", invalidDirections);
 
@@ -174,43 +219,31 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     });
   }
 
-  // If there is a food pellet nearby then grab it.
-  console.log('### SNAKY BOI');
-  console.log(otherSnakes);
+  // If there is a food pellet nearby and there is a bigger snake then grab it.
   const largestOpponent = _.maxBy(otherSnakes, snake => snake.length);
-  console.log('### BIG BOYE');
-  console.log(largestOpponent);
-
-  if (!move && closestFood && ownSnake.health <= 25 || largestOpponent.length > ownSnake.length) {
-    console.log(snakeHeadX);
-    console.log(snakeHeadY);
-    console.log(closestFood);
-    if (snakeHeadX === closestFood.x) {
+  if (
+    (!move && closestFood && ownSnake.health <= 25) ||
+    largestOpponent.length > ownSnake.length
+  ) {
+    if (snakeHead.x === closestFood.x) {
       move =
-        snakeHeadY < closestFood.y
+        snakeHead.y < closestFood.y
           ? getMove("down", invalidDirections)
           : getMove("up", invalidDirections);
-    } else if (snakeHeadY === closestFood.y) {
+    } else if (snakeHead.y === closestFood.y) {
       move =
-        snakeHeadX < closestFood.x
+        snakeHead.x < closestFood.x
           ? getMove("right", invalidDirections)
           : getMove("left", invalidDirections);
     }
 
-    console.log("### MOVE");
-    console.log(snakeHeadY === closestFood.y);
-    console.log(snakeHeadX < closestFood.x);
-    console.log(snakeHeadY);
-    console.log(closestFood.y);
-    console.log(move);
-
     if (!move) {
       let possibleDirections = [];
 
-      if (snakeHeadX < closestFood.x) possibleDirections.push("right");
+      if (snakeHead.x < closestFood.x) possibleDirections.push("right");
       else possibleDirections.push("left");
 
-      if (snakeHeadY < closestFood.y) possibleDirections.push("down");
+      if (snakeHead.y < closestFood.y) possibleDirections.push("down");
       else possibleDirections.push("up");
 
       move =
@@ -238,8 +271,6 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
     taunt = "This is the end for me!";
   }
-
-  console.log(invalidDirections);
 
   // Response data
   const responseData: MoveResponseData = { move, taunt };
