@@ -63,7 +63,7 @@ function setCollisionPossibilities(
         invalidDirections.left = true;
       if (snakeHead.y + 1 === point.y && snakeHead.x === point.x)
         invalidDirections.down = true;
-      if (snakeHead.y - 1 === point.y && snakeHead.y === point.x)
+      if (snakeHead.y - 1 === point.y && snakeHead.x === point.x)
         invalidDirections.up = true;
     });
   });
