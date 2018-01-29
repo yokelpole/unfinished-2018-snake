@@ -103,12 +103,13 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     .map(snake => snake.body.data)
     .union()
     .value();
+  const snakeBodiesAndFood: Array<Point> = _.union(_.flatten(snakeBodies), requestData.food.data);
 
-  // Assign the directions that we can go without hitting a snake.
-  setCollisionPossibilities(snakeHead, snakeBodies, invalidDirections);
+  // Assign the directions that we can go without hitting a snake or food.
+  setCollisionPossibilities(snakeHead, snakeBodiesAndFood, invalidDirections);
 
-  console.log('### INVALID DIRECTIONS');
-  console.log(invalidDirections);
+  // If we MUST eat, then recalculate to allow for eating food.
+  if (_.every(invalidDirections, _.isTrue)) setCollisionPossibilities(snakeHead, snakeBodies, invalidDirections);
 
   // Make sure the next move won't result in a dead end.
   // TODO: Make this check a few moves in advance and check for where the snake's tail will be.
@@ -137,14 +138,8 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
     setCollisionPossibilities(checkedPoint, snakeBodies, newInvalidDirections);
 
-    console.log(`### TESTED ${direction}`);
-    console.log(newInvalidDirections);
-
     if (_.every(newInvalidDirections, _.isTrue)) invalidDirections[direction] = true;
   });
-
-  console.log('### UPDATED INVALID DIRECTIONS');
-  console.log(invalidDirections);
 
   // Food
   let closestFoodMoves;
