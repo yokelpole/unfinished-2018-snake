@@ -54,6 +54,7 @@ function getMove(
   direction: string,
   invalidDirections: InvalidDirections
 ): string {
+  console.log(`### getMove: ${direction}`);
   if (invalidDirections[direction]) return undefined;
 
   return direction;
@@ -329,19 +330,33 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     const xToTail = snakeHead.x - snakeTail.x;
     const yToTail = snakeHead.y - snakeTail.y;
 
-    if (xToTail === 0 || yToTail > xToTail) {
+    if (xToTail === 0) {
       move =
-        yToTail <= 0
-          ? getMove("down", invalidDirections)
-          : getMove("up", invalidDirections);
-    } else if (yToTail === 0 || xToTail > yToTail){
+        getMove("down", invalidDirections) || getMove("up", invalidDirections);
+    } else if (yToTail === 0) {
       move =
-        xToTail <= 0
-          ? getMove("left", invalidDirections)
-          : getMove("right", invalidDirections);
+        getMove("left", invalidDirections) ||
+        getMove("right", invalidDirections);
     }
 
-    console.log('### TAIL LOGIC');
+    if (!move) {
+      if (Math.abs(xToTail) > Math.abs(yToTail)) {
+        console.log('### X TO TAIL GREATER THAN Y TO TAIL');
+        move =
+          xToTail < 0
+            ? getMove("left", invalidDirections)
+            : getMove("right", invalidDirections);
+      } else if (Math.abs(yToTail) > Math.abs(xToTail)) {
+        console.log('### Y TO TAIL GREATER THAN X TO TAIL');
+        move =
+          yToTail <= 0
+            ? getMove("down", invalidDirections)
+            : getMove("up", invalidDirections);
+      }
+    }
+
+    console.log(invalidDirections);
+    console.log("### TAIL LOGIC");
     console.log(`### x: ${xToTail}`);
     console.log(`### y: ${yToTail}`);
     console.log(`### move: ${move}`);
@@ -352,6 +367,9 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   // If the tail moves don't pan out then move in a random direction.
   if (!move && !_.every(invalidDirections, _.isTrue)) {
     const validDirections = _.keys(_.pickBy(invalidDirections, _.isFalse));
+    console.log("### VALID DIRECTIONS");
+    console.log(validDirections);
+
     move = validDirections[(validDirections.length * Math.random()) << 0];
 
     taunt = "Sometimes cruising around makes for interesting finds!";
