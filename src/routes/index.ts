@@ -333,18 +333,10 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
     if (Math.abs(xToTail) >= Math.abs(yToTail)) {
       move = xToTail < 0 ? getMove("left", invalidDirections) : getMove("right", invalidDirections);
+      move = yToTail < 0 ? getMove("up", invalidDirections) : getMove("down", invalidDirections);
     } else {
       move = yToTail < 0 ? getMove("up", invalidDirections) : getMove("down", invalidDirections);
-    }
-
-    // If the first direction is blocked, try the other.
-    // TODO: This can definitely be done more cleanly.
-    if (!move) {
-      if (Math.abs(xToTail) >= Math.abs(yToTail)) {
-        move = xToTail < 0 ? getMove("up", invalidDirections) : getMove("down", invalidDirections);
-      } else {
-        move = yToTail < 0 ? getMove("left", invalidDirections) : getMove("right", invalidDirections);
-      }
+      move = xToTail < 0 ? getMove("left", invalidDirections) : getMove("right", invalidDirections);
     }
     
     taunt = "Round and round like the wheels on my caddy!";
