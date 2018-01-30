@@ -162,9 +162,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   );
 
   // Check if the snake has eaten this round so that we can remove the tail from the list of bad sectors.
-  if (
-    !_.isEqual(snakeTail, snakeBody[snakeBody.length - 2])
-  ) {
+  if (!_.isEqual(snakeTail, snakeBody[snakeBody.length - 2])) {
     const tail = snakeBody[snakeBody.length - 1];
     _.remove(snakeBodies, body => tail.x === body.x && tail.y === body.y);
     _.remove(
@@ -331,19 +329,33 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     const xToTail = snakeHead.x - snakeTail.x;
     const yToTail = snakeHead.y - snakeTail.y;
 
-    if (Math.abs(xToTail) >= Math.abs(yToTail)) {
-      move = xToTail < 0 ? getMove("left", invalidDirections) : getMove("right", invalidDirections);
-      if (!move) move = yToTail < 0 ? getMove("up", invalidDirections) : getMove("down", invalidDirections);
-    } else {
-      move = yToTail < 0 ? getMove("up", invalidDirections) : getMove("down", invalidDirections);
-      if (!move) move = xToTail < 0 ? getMove("left", invalidDirections) : getMove("right", invalidDirections);
+    if (xToTail === 0 || yToTail > xToTail) {
+      move =
+        yToTail <= 0
+          ? getMove("down", invalidDirections)
+          : getMove("up", invalidDirections);
+      if (!move)
+        move =
+          yToTail <= 0
+            ? getMove("up", invalidDirections)
+            : getMove("down", invalidDirections);
+    } else if (yToTail === 0 || xToTail > yToTail){
+      move =
+        xToTail <= 0
+          ? getMove("left", invalidDirections)
+          : getMove("right", invalidDirections);
+      if (!move)
+        move =
+          xToTail <= 0
+            ? getMove("right", invalidDirections)
+            : getMove("left", invalidDirections);
     }
 
     taunt = "Round and round like the wheels on my caddy!";
   }
 
   // If the tail moves don't pan out then move in a random direction.
-  if (!move && !_.every(invalidDirections, _.isTrue)) { 
+  if (!move && !_.every(invalidDirections, _.isTrue)) {
     const validDirections = _.keys(_.pickBy(invalidDirections, _.isFalse));
     move = validDirections[(validDirections.length * Math.random()) << 0];
 
