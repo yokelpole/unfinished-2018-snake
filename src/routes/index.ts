@@ -139,7 +139,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     height: requestData.height
   };
 
-  console.log('### REQUEST DATA');
+  console.log("### REQUEST DATA");
   console.log(requestData);
 
   // Initialize variables that store where the snake can go.
@@ -333,26 +333,26 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     const xToTail = snakeHead.x - snakeTail.x;
     const yToTail = snakeHead.y - snakeTail.y;
 
-    if (xToTail === 0) {
+    /*if (xToTail === 0) {
       move =
         getMove("down", invalidDirections) || getMove("up", invalidDirections);
     } else if (yToTail === 0) {
       move =
         getMove("left", invalidDirections) ||
         getMove("right", invalidDirections);
-    }
+    }*/
 
     if (!move) {
       if (Math.abs(xToTail) > Math.abs(yToTail)) {
-        console.log('### X TO TAIL GREATER THAN Y TO TAIL');
+        console.log("### X TO TAIL GREATER THAN Y TO TAIL");
         move =
           xToTail < 0
             ? getMove("left", invalidDirections)
             : getMove("right", invalidDirections);
       } else if (Math.abs(yToTail) > Math.abs(xToTail)) {
-        console.log('### Y TO TAIL GREATER THAN X TO TAIL');
+        console.log("### Y TO TAIL GREATER THAN X TO TAIL");
         move =
-          yToTail <= 0
+          yToTail < 0
             ? getMove("down", invalidDirections)
             : getMove("up", invalidDirections);
       }
