@@ -31,10 +31,10 @@ router.post(
 
     // Response data
     const responseData: StartResponseData = {
-      color: "#CCCCFF",
-      name: "Periwinkle the Snake",
+      color: "#FFFF00",
+      name: "Guy Fieri",
       head_url: "http://www.placecage.com/c/200/200", // optional, but encouraged!
-      taunt: "This is goind to end badly" // optional, but encouraged!
+      taunt: "Time to hop in my convertible and go eat some grease!" // optional, but encouraged!
     };
 
     return res.json(responseData);
@@ -145,6 +145,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   const ownSnake: Snake = requestData.you;
   const snakeBody = ownSnake.body.data;
   const snakeHead: Point = snakeBody[0];
+  const snakeTail: Point = snakeBody[snakeBody.length - 1];
 
   // Opposition.
   const otherSnakes: Array<Snake> = _(requestData.snakes.data)
@@ -159,6 +160,18 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     _.flatten(snakeBodies),
     requestData.food.data
   );
+
+  // Check if the snake has eaten this round so that we can remove the tail from the list of bad sectors.
+  if (
+    !_.isEqual(snakeTail, snakeBody[snakeBody.length - 2])
+  ) {
+    const tail = snakeBody[snakeBody.length - 1];
+    _.remove(snakeBodies, body => tail.x === body.x && tail.y === body.y);
+    _.remove(
+      snakeBodiesAndFood,
+      body => tail.x === body.x && tail.y === body.y
+    );
+  }
 
   // Assign the directions that we can go without hitting a snake or food.
   setCollisionPossibilities(
@@ -261,7 +274,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
       )
         move = getMove("down", invalidDirections);
 
-      taunt = "I'm going to ask you politely but firmly to leave.";
+      taunt = "*angry slupring noises*";
     });
   }
 
@@ -281,7 +294,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
       invalidDirections
     );
     checkNextMoves(snakeHead, snakeBodies, width, height, invalidDirections);
-    
+
     if (snakeHead.x === closestFood.x) {
       move =
         snakeHead.y < closestFood.y
@@ -309,24 +322,47 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
           : getMove(possibleDirections[1], invalidDirections);
     }
 
-    taunt = "Taste the meat, not the heat!";
+    taunt = "Time to take a trip to FlavorTown!";
   }
 
-  // For some reason we haven't settled on a move - randomly pick one direction that is allowed.
+  // If there are no higher priorities then move towards its tail.
   if (!move && !_.every(invalidDirections, _.isTrue)) {
-    const validDirections = _.keys(
-      _.pickBy(invalidDirections, direction => !direction)
-    );
+    // Determine the most efficient route to the snake's tail.
+    const xToTail = snakeHead.x - snakeTail.x;
+    const yToTail = snakeHead.y - snakeTail.y;
+
+    if (Math.abs(xToTail) >= Math.abs(yToTail)) {
+      move = xToTail < 0 ? getMove("left", invalidDirections) : getMove("right", invalidDirections);
+    } else {
+      move = xToTail < 0 ? getMove("up", invalidDirections) : getMove("down", invalidDirections);
+    }
+
+    // If the first direction is blocked, try the other.
+    // TODO: This can definitely be done more cleanly.
+    if (!move) {
+      if (Math.abs(xToTail) >= Math.abs(yToTail)) {
+        move = xToTail < 0 ? getMove("up", invalidDirections) : getMove("down", invalidDirections);
+      } else {
+        move = xToTail < 0 ? getMove("left", invalidDirections) : getMove("right", invalidDirections);
+      }
+    }
+    
+    taunt = "Round and round like the wheels on my caddy!";
+  }
+
+  // If the tail moves don't pan out then move in a random direction.
+  if (!move && !_.every(invalidDirections, _.isTrue)) { 
+    const validDirections = _.keys(_.pickBy(invalidDirections, _.isFalse));
     move = validDirections[(validDirections.length * Math.random()) << 0];
 
-    taunt = "Dangit Bobby!";
+    taunt = "Sometimes cruising around makes for interesting finds!";
   }
 
   // If we don't have a move because no directions are valid then pick one randomly and post a suicide message.
   if (!move && _.every(invalidDirections, _.isTrue)) {
     move = ["up", "down", "left", "right"][Math.floor(Math.random() * 4) + 1];
 
-    taunt = "Bwhaaa!";
+    taunt = "Is this the end of triple D?";
   }
 
   // Response data
