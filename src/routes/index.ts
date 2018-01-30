@@ -334,24 +334,19 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
         yToTail <= 0
           ? getMove("down", invalidDirections)
           : getMove("up", invalidDirections);
-      if (!move)
-        move =
-          yToTail <= 0
-            ? getMove("up", invalidDirections)
-            : getMove("down", invalidDirections);
     } else if (yToTail === 0 || xToTail > yToTail){
       move =
         xToTail <= 0
           ? getMove("left", invalidDirections)
           : getMove("right", invalidDirections);
-      if (!move)
-        move =
-          xToTail <= 0
-            ? getMove("right", invalidDirections)
-            : getMove("left", invalidDirections);
     }
 
-    taunt = "Round and round like the wheels on my caddy!";
+    console.log('### TAIL LOGIC');
+    console.log(`### x: ${xToTail}`);
+    console.log(`### y: ${yToTail}`);
+    console.log(`### move: ${move}`);
+
+    if (move) taunt = "Round and round like the wheels on my caddy!";
   }
 
   // If the tail moves don't pan out then move in a random direction.
