@@ -139,6 +139,9 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     height: requestData.height
   };
 
+  console.log('### REQUEST DATA');
+  console.log(requestData);
+
   // Initialize variables that store where the snake can go.
   let invalidDirections: InvalidDirections = getNewInvalidDirections();
 
