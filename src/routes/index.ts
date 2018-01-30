@@ -261,7 +261,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
       )
         move = getMove("down", invalidDirections);
 
-      taunt = "I'm coming for ya!";
+      taunt = "I'm going to ask you politely but firmly to leave.";
     });
   }
 
@@ -309,7 +309,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
           : getMove(possibleDirections[1], invalidDirections);
     }
 
-    taunt = "I'm always hungry!";
+    taunt = "Taste the meat, not the heat!";
   }
 
   // For some reason we haven't settled on a move - randomly pick one direction that is allowed.
@@ -319,14 +319,14 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     );
     move = validDirections[(validDirections.length * Math.random()) << 0];
 
-    taunt = "I'm leaving this one up to fate!";
+    taunt = "Dangit Bobby!";
   }
 
   // If we don't have a move because no directions are valid then pick one randomly and post a suicide message.
   if (!move && _.every(invalidDirections, _.isTrue)) {
     move = ["up", "down", "left", "right"][Math.floor(Math.random() * 4) + 1];
 
-    taunt = "This is the end for me!";
+    taunt = "Bwhaaa!";
   }
 
   // Response data
