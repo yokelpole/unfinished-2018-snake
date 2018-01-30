@@ -369,7 +369,9 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
 
   // If the tail moves don't pan out then move in a random direction.
   if (!move && !_.every(invalidDirections, _.isTrue)) {
-    const validDirections = _.keys(_.pickBy(invalidDirections, _.isFalse));
+    const validDirections = _.keys(
+      _.pickBy(invalidDirections, direction => !direction)
+    );
     console.log("### VALID DIRECTIONS");
     console.log(validDirections);
 
