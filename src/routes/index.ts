@@ -85,6 +85,40 @@ function setCollisionPossibilities(
   });
 }
 
+function setBiggerSnakeConflicts(ownSnake: Snake, otherSnakes: Array<Snake>, invalidDirections: InvalidDirections) {
+  // Don't go a way that can result in a collision with a larger snake.
+  let otherSnakeCoordinates = [];
+  const snakeHead = { x: ownSnake.body.data[0].x, y: ownSnake.body.data[0].y }
+
+  _.each(otherSnakes, otherSnake => {
+    const otherSnakeBody = otherSnake.body.data;
+    if (otherSnake.length <= ownSnake.length) return;
+
+    const otherSnakeHead = otherSnakeBody[0];
+
+    if (
+      snakeHead.x - 1 === otherSnakeHead.x + 1 &&
+      snakeHead.y === otherSnakeHead.y
+    )
+      invalidDirections.left = true;
+    if (
+      snakeHead.y - 1 === otherSnakeHead.y + 1 &&
+      snakeHead.x === otherSnakeHead.x
+    )
+      invalidDirections.up = true;
+    if (
+      snakeHead.x + 1 === otherSnakeHead.x - 1 &&
+      snakeHead.y === otherSnakeHead.y
+    )
+      invalidDirections.right = true;
+    if (
+      snakeHead.y + 1 === otherSnakeHead.y - 1 &&
+      snakeHead.x === otherSnakeHead.x
+    )
+      invalidDirections.down = true;
+  });
+}
+
 // TODO: Make this check a few moves in advance and check for where the snake's tail will be.
 function checkNextMoves(
   snakeHead: Point,
@@ -190,6 +224,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     height,
     invalidDirections
   );
+  setBiggerSnakeConflicts(ownSnake, otherSnakes, invalidDirections);
 
   // If we MUST eat, then recalculate to allow for eating food.
   if (_.every(invalidDirections, _.isTrue)) {
@@ -202,6 +237,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
       invalidDirections
     );
     checkNextMoves(snakeHead, snakeBodies, width, height, invalidDirections);
+    setBiggerSnakeConflicts(ownSnake, otherSnakes, invalidDirections);
   }
 
   // Food
@@ -215,36 +251,6 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
       closestFoodMoves = moveCount;
       closestFood = food;
     }
-  });
-
-  // Don't go a way that can result in a collision with a larger snake.
-  let otherSnakeCoordinates = [];
-  _.each(otherSnakes, otherSnake => {
-    const otherSnakeBody = otherSnake.body.data;
-    if (otherSnake.length <= ownSnake.length) return;
-
-    const otherSnakeHead = otherSnakeBody[0];
-
-    if (
-      snakeHead.x - 1 === otherSnakeHead.x + 1 &&
-      snakeHead.y === otherSnakeHead.y
-    )
-      invalidDirections.left = true;
-    if (
-      snakeHead.y - 1 === otherSnakeHead.y + 1 &&
-      snakeHead.x === otherSnakeHead.x
-    )
-      invalidDirections.up = true;
-    if (
-      snakeHead.x + 1 === otherSnakeHead.x - 1 &&
-      snakeHead.y === otherSnakeHead.y
-    )
-      invalidDirections.right = true;
-    if (
-      snakeHead.y + 1 === otherSnakeHead.y - 1 &&
-      snakeHead.x === otherSnakeHead.x
-    )
-      invalidDirections.down = true;
   });
 
   // If there is a less powerful snake within range try to stop it.
@@ -296,6 +302,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
       invalidDirections
     );
     checkNextMoves(snakeHead, snakeBodies, width, height, invalidDirections);
+    setBiggerSnakeConflicts(ownSnake, otherSnakes, invalidDirections);
 
     if (snakeHead.x === closestFood.x) {
       move =
