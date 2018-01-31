@@ -44,17 +44,20 @@ function setCollisionPossibilities(
   if (snakeHead.y + 1 === height)
     adjustScoredDirection(scoredDirections, "down", 2.0 * -severity);
 
-  _.each(otherBodies, point => {
+  _.each(otherBodies, (point: Point) => {
+    // Make food less hostile to the snake.
+    const scoreMultiplier = point.type === 'snake' ? 1.0 : 0.25;
+
     // Make sure there are no immediate conflicts with other items on the board.
     // TODO: weight food as a lesser evil.
     if (snakeHead.x + 1 === point.x && snakeHead.y === point.y)
-      adjustScoredDirection(scoredDirections, "right", 1.0 * -severity);
+      adjustScoredDirection(scoredDirections, "right", scoreMultiplier * -severity);
     if (snakeHead.x - 1 === point.x && snakeHead.y === point.y)
-      adjustScoredDirection(scoredDirections, "left", 1.0 * -severity);
+      adjustScoredDirection(scoredDirections, "left", scoreMultiplier * -severity);
     if (snakeHead.y + 1 === point.y && snakeHead.x === point.x)
-      adjustScoredDirection(scoredDirections, "down", 1.0 * -severity);
+      adjustScoredDirection(scoredDirections, "down", scoreMultiplier * -severity);
     if (snakeHead.y - 1 === point.y && snakeHead.x === point.x)
-      adjustScoredDirection(scoredDirections, "up", 1.0 * -severity);
+      adjustScoredDirection(scoredDirections, "up", scoreMultiplier * -severity);
   });
 }
 
@@ -79,7 +82,8 @@ function checkNextMoves(
         direction === "up" || direction === "down"
           ? snakeHead.y + deviation
           : snakeHead.y,
-      object: "point"
+      object: "point",
+      type: "snake"
     };
 
     setCollisionPossibilities(
@@ -235,10 +239,12 @@ export function getScoredDirections(
     .union()
     .flatten()
     .value();
+  // We also set the type of point here so food is scored less hostile than a snake.
   const snakeBodiesAndFood: Array<Point> = _.union(
-    _.flatten(snakeBodies),
-    food
+    _.flatten(_.each(snakeBodies, point => (point.type = "snake"))),
+    _.each(food, point => (point.type = "food"))
   );
+
   const scoredDirections: ScoredDirections = {
     up: 1.0,
     down: 1.0,

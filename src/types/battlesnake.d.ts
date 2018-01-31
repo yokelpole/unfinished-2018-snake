@@ -62,6 +62,7 @@ export type Point = {
     x: number,
     y: number,
     object: string,
+    type: string,
 };
 
 export interface ScoredDirections {
