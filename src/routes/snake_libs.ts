@@ -46,7 +46,7 @@ function setCollisionPossibilities(
 
   _.each(otherBodies, (point: Point) => {
     // Make food less hostile to the snake.
-    const scoreMultiplier = point.type === 'snake' ? 1.0 : 0.25;
+    const scoreMultiplier = point.type === 'snake' ? 1.0 : 0.10;
 
     // Make sure there are no immediate conflicts with other items on the board.
     if (snakeHead.x + 1 === point.x && snakeHead.y === point.y)
