@@ -208,22 +208,22 @@ function setAttackIncentive(
       snakeHead.x - 1 === otherSnakeHead.x + 1 &&
       snakeHead.y === otherSnakeHead.y
     )
-      adjustScoredDirection(scoredDirections, "left", +0.5);
+      adjustScoredDirection(scoredDirections, "left", +0.75);
     if (
       snakeHead.y - 1 === otherSnakeHead.y + 1 &&
       snakeHead.x === otherSnakeHead.x
     )
-      adjustScoredDirection(scoredDirections, "up", +0.5);
+      adjustScoredDirection(scoredDirections, "up", +0.75);
     if (
       snakeHead.x + 1 === otherSnakeHead.x - 1 &&
       snakeHead.y === otherSnakeHead.y
     )
-      adjustScoredDirection(scoredDirections, "right", +0.5);
+      adjustScoredDirection(scoredDirections, "right", +0.75);
     if (
       snakeHead.y + 1 === otherSnakeHead.y - 1 &&
       snakeHead.x === otherSnakeHead.x
     )
-      adjustScoredDirection(scoredDirections, "down", +0.5);
+      adjustScoredDirection(scoredDirections, "down", +0.75);
   });
 }
 
