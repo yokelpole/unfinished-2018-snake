@@ -28,6 +28,7 @@ function adjustScoredDirection(
 
 function setCollisionPossibilities(
   snakeHead: Point,
+  snakeHealth: Number,
   otherBodies: Array<Point>,
   width: Number,
   height: Number,
@@ -45,24 +46,43 @@ function setCollisionPossibilities(
     adjustScoredDirection(scoredDirections, "down", 2.0 * -severity);
 
   _.each(otherBodies, (point: Point) => {
-    // Make food less hostile to the snake.
-    const scoreMultiplier = point.type === 'snake' ? 1.0 : 0.10;
+    if (snakeHealth <= MIN_HEALTH && point.type === "food") return;
+
+    // Make food less hostile to the snake when not hungry.
+    const scoreMultiplier = point.type === "snake" ? 1.0 : 0.1;
 
     // Make sure there are no immediate conflicts with other items on the board.
     if (snakeHead.x + 1 === point.x && snakeHead.y === point.y)
-      adjustScoredDirection(scoredDirections, "right", scoreMultiplier * -severity);
+      adjustScoredDirection(
+        scoredDirections,
+        "right",
+        scoreMultiplier * -severity
+      );
     if (snakeHead.x - 1 === point.x && snakeHead.y === point.y)
-      adjustScoredDirection(scoredDirections, "left", scoreMultiplier * -severity);
+      adjustScoredDirection(
+        scoredDirections,
+        "left",
+        scoreMultiplier * -severity
+      );
     if (snakeHead.y + 1 === point.y && snakeHead.x === point.x)
-      adjustScoredDirection(scoredDirections, "down", scoreMultiplier * -severity);
+      adjustScoredDirection(
+        scoredDirections,
+        "down",
+        scoreMultiplier * -severity
+      );
     if (snakeHead.y - 1 === point.y && snakeHead.x === point.x)
-      adjustScoredDirection(scoredDirections, "up", scoreMultiplier * -severity);
+      adjustScoredDirection(
+        scoredDirections,
+        "up",
+        scoreMultiplier * -severity
+      );
   });
 }
 
 // TODO: Make this check a few moves in advance and check for where the snake's tail will be.
 function checkNextMoves(
   snakeHead: Point,
+  snakeHealth: Number,
   otherBodies: Array<Point>,
   width: Number,
   height: Number,
@@ -87,6 +107,7 @@ function checkNextMoves(
 
     setCollisionPossibilities(
       checkedPoint,
+      snakeHealth,
       otherBodies,
       width,
       height,
@@ -258,6 +279,7 @@ export function getScoredDirections(
   // Set immediate collision possibilities.
   setCollisionPossibilities(
     ownSnake.body.data[0],
+    ownSnake.health,
     ownSnake.health > MIN_HEALTH ? snakeBodiesAndFood : snakeBodies,
     boardWidth,
     boardHeight,
@@ -272,6 +294,7 @@ export function getScoredDirections(
   // Try to estimate the next moves and how safe they are.
   checkNextMoves(
     ownSnake.body.data[0],
+    ownSnake.health,
     ownSnake.health > MIN_HEALTH ? snakeBodiesAndFood : snakeBodies,
     boardWidth,
     boardHeight,
