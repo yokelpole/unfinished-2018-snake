@@ -11,7 +11,7 @@ import {
   Point
 } from "../types/battlesnake";
 
-const MIN_HEALTH = 50;
+const MIN_HEALTH = 75;
 
 function adjustScoredDirection(
   scoredDirection: ScoredDirections,
