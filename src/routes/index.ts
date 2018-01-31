@@ -46,8 +46,8 @@ router.post(
 router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   const requestData = req.body;
 
-  console.log("### REQUEST DATA");
-  console.log(requestData);
+  // console.log("### REQUEST DATA");
+  // console.log(requestData);
 
   // Own snake data.
   const ownSnake: Snake = snakeLibs.pruneSnakesTailsIfNotEaten([

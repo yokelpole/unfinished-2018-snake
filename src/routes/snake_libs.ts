@@ -18,9 +18,9 @@ function adjustScoredDirection(
   direction: string,
   amount
 ) {
-  console.log("### ADJUSTING SCORE DIRECTION");
-  console.log(direction);
-  console.log(amount);
+  // console.log("### ADJUSTING SCORE DIRECTION");
+  // console.log(direction);
+  // console.log(amount);
   if (scoredDirection[direction] <= 0 && amount > 0) return;
 
   scoredDirection[direction] += amount;
@@ -246,7 +246,7 @@ export function getScoredDirections(
     right: 1.0
   };
 
-  console.log("### CHECKING COLLISION POSSIBILITIES");
+  // console.log("### CHECKING COLLISION POSSIBILITIES");
 
   // Set immediate collision possibilities.
   setCollisionPossibilities(
@@ -257,11 +257,11 @@ export function getScoredDirections(
     scoredDirections
   );
 
-  console.log("### CHECKING BIGGER SNAKE CONFLICTS");
+  // console.log("### CHECKING BIGGER SNAKE CONFLICTS");
   // See if we'll IMMEDIATELY be gobbled up in a particular direction.
   setBiggerSnakeConflicts(ownSnake, otherSnakes, scoredDirections);
 
-  console.log("### CHECKING NEXT MOVES");
+  // console.log("### CHECKING NEXT MOVES");
   // Try to estimate the next moves and how safe they are.
   checkNextMoves(
     ownSnake.body.data[0],
@@ -271,7 +271,7 @@ export function getScoredDirections(
     scoredDirections
   );
 
-  console.log("### DOING THE HEALTH CHECK");
+  // console.log("### DOING THE HEALTH CHECK");
   // If the snake is hungry, boost the score of the direction that will
   // lead us to the closest unblocked food.
   if (ownSnake.health < MIN_HEALTH) {
@@ -283,11 +283,11 @@ export function getScoredDirections(
     );
   }
 
-  console.log("### SETTING THE ATTACK INCENTIVE");
+  // console.log("### SETTING THE ATTACK INCENTIVE");
   // See if there is a snake that we can immediately destroy.
   setAttackIncentive(ownSnake, otherSnakes, scoredDirections);
 
-  console.log("### RETURNING THE SCORED DIRECTIONS");
+  // console.log("### RETURNING THE SCORED DIRECTIONS");
   return scoredDirections;
 }
 
