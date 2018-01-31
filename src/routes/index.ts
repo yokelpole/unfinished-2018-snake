@@ -76,7 +76,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   console.log(scoredDirections);
 
   // Choose the highest value in the scored directions and go with it.
-  const move = _.max(
+  const move = _.maxBy(
     _.keys(scoredDirections),
     direction => scoredDirections[direction]
   );
