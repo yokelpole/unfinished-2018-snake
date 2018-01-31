@@ -64,11 +64,11 @@ export type Point = {
     object: string,
 };
 
-export interface InvalidDirections {
-    up: Boolean,
-    down: Boolean,
-    left: Boolean,
-    right: Boolean,
+export interface ScoredDirections {
+    up: number,
+    down: number,
+    left: number,
+    right: number,
 }
 
 export interface Snake {
