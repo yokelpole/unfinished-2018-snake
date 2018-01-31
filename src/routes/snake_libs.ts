@@ -49,7 +49,6 @@ function setCollisionPossibilities(
     const scoreMultiplier = point.type === 'snake' ? 1.0 : 0.25;
 
     // Make sure there are no immediate conflicts with other items on the board.
-    // TODO: weight food as a lesser evil.
     if (snakeHead.x + 1 === point.x && snakeHead.y === point.y)
       adjustScoredDirection(scoredDirections, "right", scoreMultiplier * -severity);
     if (snakeHead.x - 1 === point.x && snakeHead.y === point.y)
@@ -143,6 +142,8 @@ function setScoreClosestFoodDirection(
 ) {
   let closestFoodMoves = 999;
   let closestFood;
+
+  // TODO: Add multiplier based on the largest snake on the table.
 
   _.each(foodPoints, (food: Point) => {
     const movesX = food.x - snakeHead.x;
