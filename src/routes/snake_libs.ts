@@ -11,7 +11,7 @@ import {
   Point
 } from "../types/battlesnake";
 
-const MIN_HEALTH = 20;
+const MIN_HEALTH = 30;
 
 function adjustScoredDirection(
   scoredDirection: ScoredDirections,
@@ -36,16 +36,17 @@ function setCollisionPossibilities(
 ) {
   // Check the snake's location in relation to the board.
   if (snakeHead.x === 0)
-    adjustScoredDirection(scoredDirections, "left", 1.0 * -severity);
+    adjustScoredDirection(scoredDirections, "left", 2.0 * -severity);
   if (snakeHead.y === 0)
-    adjustScoredDirection(scoredDirections, "up", 1.0 * -severity);
+    adjustScoredDirection(scoredDirections, "up", 2.0 * -severity);
   if (snakeHead.x + 1 === width)
-    adjustScoredDirection(scoredDirections, "right", 1.0 * -severity);
+    adjustScoredDirection(scoredDirections, "right", 2.0 * -severity);
   if (snakeHead.y + 1 === height)
-    adjustScoredDirection(scoredDirections, "down", 1.0 * -severity);
+    adjustScoredDirection(scoredDirections, "down", 2.0 * -severity);
 
   _.each(otherBodies, point => {
     // Make sure there are no immediate conflicts with other items on the board.
+    // TODO: weight food as a lesser evil.
     if (snakeHead.x + 1 === point.x && snakeHead.y === point.y)
       adjustScoredDirection(scoredDirections, "right", 1.0 * -severity);
     if (snakeHead.x - 1 === point.x && snakeHead.y === point.y)
@@ -107,8 +108,6 @@ function setBiggerSnakeConflicts(
 
     const otherSnakeHead = otherSnakeBody[0];
 
-    // TODO: Have the following scores subtract a certain amount to determine
-    // how appropriate a particular direction is to go.
     if (
       snakeHead.x - 1 === otherSnakeHead.x + 1 &&
       snakeHead.y === otherSnakeHead.y
@@ -178,11 +177,11 @@ function setScoreClosestFoodDirection(
       closestFoodMoves = moveCount;
 
       if (Math.abs(movesX) > Math.abs(movesY)) {
-        if (movesY > 0) adjustScoredDirection(scoredDirections, "down", +0.5);
-        else adjustScoredDirection(scoredDirections, "up", +0.5);
+        if (movesY > 0) adjustScoredDirection(scoredDirections, "down", +0.66);
+        else adjustScoredDirection(scoredDirections, "up", +0.66);
       } else {
-        if (movesX > 0) adjustScoredDirection(scoredDirections, "right", +0.5);
-        else adjustScoredDirection(scoredDirections, "left", +0.5);
+        if (movesX > 0) adjustScoredDirection(scoredDirections, "right", +0.66);
+        else adjustScoredDirection(scoredDirections, "left", +0.66);
       }
     }
   });
