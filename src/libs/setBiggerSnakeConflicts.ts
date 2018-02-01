@@ -23,11 +23,7 @@ export function setBiggerSnakeConflicts(
 
     _.each(ownSnakeMoves, (ownMove: Point) => {
       _.each(otherSnakeMoves, (otherMove: Point) => {
-        console.log(`### OTHER X:${otherMove.x} Y:${otherMove.y}`);
-        console.log(`### YOUR X:${ownMove.x} Y:${ownMove.y}`);
-
         if (ownMove.x === otherMove.x && ownMove.y === otherMove.y) {
-          console.log('### CLASH');
           if (snakeHead.x > ownMove.x)
             adjustScoredDirection(scoredDirections, "left", SCORE_VALUE);
           if (snakeHead.x < ownMove.x)
