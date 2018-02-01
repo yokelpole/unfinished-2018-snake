@@ -7,7 +7,7 @@ import { setScoreClosestFoodDirection } from "./setScoreClosestFoodDirection";
 import { Snake, Point, ScoredDirections } from "../types/battlesnake";
 import { checkForDeadEnds } from "./checkForDeadEnd";
 
-export const MIN_HEALTH = 80;
+export const MIN_HEALTH = 60;
 
 export function adjustScoredDirection(
   scoredDirection: ScoredDirections,
