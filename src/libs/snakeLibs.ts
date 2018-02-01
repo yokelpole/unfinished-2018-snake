@@ -67,7 +67,6 @@ export function getScoredDirections(
     down: 1.0,
     left: 1.0,
     right: 1.0,
-    motivations: [],
   };
 
   // Set immediate collision possibilities.
@@ -93,8 +92,6 @@ export function getScoredDirections(
       food,
       scoredDirections
     );
-
-    scoredDirections.motivations.push('hungry');
   }
 
   // Try to estimate the next moves and how safe they are.

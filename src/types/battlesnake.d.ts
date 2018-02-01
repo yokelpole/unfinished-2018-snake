@@ -70,7 +70,6 @@ export interface ScoredDirections {
     down: number,
     left: number,
     right: number,
-    motivations: Array<string>,
 }
 
 export interface Snake {
