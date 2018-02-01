@@ -2,6 +2,8 @@ import { Point, ScoredDirections } from "../types/battlesnake";
 import { adjustScoredDirection } from "./snakeLibs";
 import * as _ from "lodash";
 
+const SCORE_VALUE = 0.75;
+
 export function setScoreClosestFoodDirection(
   snakeHead: Point,
   snakeBodies: Array<Point>,
@@ -37,11 +39,11 @@ export function setScoreClosestFoodDirection(
       closestFoodMoves = moveCount;
 
       if (Math.abs(movesY) > Math.abs(movesX)) {
-        if (movesY > 0) adjustScoredDirection(scoredDirections, "down", +0.66);
-        else adjustScoredDirection(scoredDirections, "up", +0.66);
+        if (movesY > 0) adjustScoredDirection(scoredDirections, "down", SCORE_VALUE);
+        else adjustScoredDirection(scoredDirections, "up", SCORE_VALUE);
       } else {
-        if (movesX > 0) adjustScoredDirection(scoredDirections, "right", +0.66);
-        else adjustScoredDirection(scoredDirections, "left", +0.66);
+        if (movesX > 0) adjustScoredDirection(scoredDirections, "right", SCORE_VALUE);
+        else adjustScoredDirection(scoredDirections, "left", SCORE_VALUE);
       }
     }
   });
