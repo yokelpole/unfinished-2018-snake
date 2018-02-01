@@ -35,7 +35,7 @@ export function checkNextMoves(
         width,
         height,
         scoredDirections,
-        0.33
+        0.20
       );
     });
   }
