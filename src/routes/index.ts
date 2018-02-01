@@ -1,6 +1,6 @@
 import * as express from "express";
 import * as _ from "lodash";
-import * as snakeLibs from "./snake_libs";
+import * as snakeLibs from "../libs/snakeLibs";
 import {
   StartRequest,
   MoveRequest,
