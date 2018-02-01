@@ -69,8 +69,8 @@ export function getScoredDirections(
   );
 
   // Fight or flight.
-  setAttackIncentive(ownSnake, otherSnakes, scoredDirections);
   setBiggerSnakeConflicts(ownSnake, otherSnakes, scoredDirections);
+  setAttackIncentive(ownSnake, otherSnakes, scoredDirections);
 
   // If the snake is hungry, boost the score of the direction that will
   // lead us to the closest unblocked food.
