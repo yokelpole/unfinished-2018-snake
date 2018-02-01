@@ -22,7 +22,7 @@ export function setAttackIncentive(
 
     _.each(ownSnakeMoves, (ownMove: Point) => {
       _.each(otherSnakeMoves, (otherMove: Point) => {
-        if (ownMove.x === otherMove.x && ownMove.x === otherMove.y) {
+        if (ownMove.x === otherMove.x && ownMove.y === otherMove.y) {
           if (snakeHead.x > ownMove.x)
             adjustScoredDirection(scoredDirections, "left", SCORE_VALUE);
           if (snakeHead.x < ownMove.x)
