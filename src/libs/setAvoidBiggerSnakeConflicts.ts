@@ -13,7 +13,7 @@ export function setAvoidBiggerSnakeHeadsConflicts(
   const snakeHead = ownSnake.body.data[0];
 
   _.each(otherSnakes, (otherSnake: Snake) => {
-    if (otherSnake.length <= ownSnake.length) return;
+    if (ownSnake.length > otherSnake.length) return;
 
     const otherSnakeHead = otherSnake.body.data[0];
     const ownSnakeMoves: Array<Point> = getPossibleMovesForPoint(snakeHead);
