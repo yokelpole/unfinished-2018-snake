@@ -31,6 +31,18 @@ export function getPossibleMovesForPoint(point: Point): Array<Point> {
   ];
 }
 
+export function pruneSnakesTailsIfNotEaten(snakes): Array<Snake> {
+  const snakeArrayCopy = _.cloneDeep(snakes);
+
+  _.each(snakeArrayCopy, (snake: Snake) => {
+    if (_.uniq(snake.body.data).length === snake.body.data.length) return;
+
+    snake.body.data.pop();
+  });
+
+  return snakeArrayCopy;
+}
+
 export function getScoredDirections(
   ownSnake: Snake,
   otherSnakes: Array<Snake>,
@@ -106,14 +118,3 @@ export function getScoredDirections(
   return scoredDirections;
 }
 
-export function pruneSnakesTailsIfNotEaten(snakes): Array<Snake> {
-  const snakeArrayCopy = _.cloneDeep(snakes);
-
-  _.each(snakeArrayCopy, snake => {
-    if (!_.uniq(snake).length !== snake.length) return;
-
-    snake.pop();
-  });
-
-  return snakeArrayCopy;
-}
