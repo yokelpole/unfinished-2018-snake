@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import { setCollisionPossibilities } from "./setCollisionPossibilities";
 import { setAttackIncentive } from "./setAttackIncentive";
 import { checkNextMoves } from "./checkNextMoves";
-import { setAvoidBiggerSnakeHeadsConflicts } from "./setAvoidBiggerSnakeHeadsConflicts";
+import { setAvoidBiggerSnakeHeads } from "./setAvoidBiggerSnakeHeads";
 import { setScoreClosestFoodDirection } from "./setScoreClosestFoodDirection";
 import { Snake, Point, ScoredDirections } from "../types/battlesnake";
 import { checkForDeadEnds } from "./checkForDeadEnd";
@@ -80,7 +80,7 @@ export function getScoredDirections(
   );
 
   // Fight or flight.
-  setAvoidBiggerSnakeHeadsConflicts(ownSnake, otherSnakes, scoredDirections);
+  setAvoidBiggerSnakeHeads(ownSnake, otherSnakes, scoredDirections);
   setAttackIncentive(ownSnake, otherSnakes, scoredDirections);
 
   // If the snake is hungry, boost the score of the direction that will

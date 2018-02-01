@@ -4,7 +4,7 @@ import * as _ from "lodash";
 
 const SCORE_VALUE = -1.0;
 
-export function setAvoidBiggerSnakeHeadsConflicts(
+export function setAvoidBiggerSnakeHeads(
   ownSnake: Snake,
   otherSnakes: Array<Snake>,
   scoredDirections: ScoredDirections
