@@ -14,13 +14,13 @@ export function setCollisionPossibilities(
   ) {
     // Check the snake's location in relation to the board.
     if (snakeHead.x === 0)
-      adjustScoredDirection(scoredDirections, "left", 1.0 * -severity);
+      adjustScoredDirection(scoredDirections, "left", 1.5 * -severity);
     if (snakeHead.y === 0)
-      adjustScoredDirection(scoredDirections, "up", 1.0 * -severity);
+      adjustScoredDirection(scoredDirections, "up", 1.5 * -severity);
     if (snakeHead.x + 1 === width)
-      adjustScoredDirection(scoredDirections, "right", 1.0 * -severity);
+      adjustScoredDirection(scoredDirections, "right", 1.5 * -severity);
     if (snakeHead.y + 1 === height)
-      adjustScoredDirection(scoredDirections, "down", 1.0 * -severity);
+      adjustScoredDirection(scoredDirections, "down", 1.5 * -severity);
   
     _.each(otherBodies, (point: Point) => {  
       if (snakeHealth <= MIN_HEALTH && point.type === "food") return;
