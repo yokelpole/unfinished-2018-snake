@@ -14,8 +14,6 @@ export function checkNextMoves(
     _.each(_.keys(scoredDirections), (direction: string) => {
       if (scoredDirections[direction] <= 0.0) return;
   
-      console.log(direction);
-
       const deviation = direction === "up" || direction === "left" ? -1 : +1;
       const checkedPoint: Point = {
         x:
