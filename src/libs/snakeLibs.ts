@@ -7,7 +7,7 @@ import { setScoreClosestFoodDirection } from "./setScoreClosestFoodDirection";
 import { Snake, Point, ScoredDirections } from "../types/battlesnake";
 import { checkForDeadEnds } from "./checkForDeadEnd";
 
-export const MIN_HEALTH = 60;
+export const MIN_HEALTH = 75;
 
 export function adjustScoredDirection(
   scoredDirection: ScoredDirections,
@@ -68,8 +68,22 @@ export function getScoredDirections(
     scoredDirections
   );
 
-  // See if we'll IMMEDIATELY be gobbled up in a particular direction.
+  // Fight or flight.
+  setAttackIncentive(ownSnake, otherSnakes, scoredDirections);
   setBiggerSnakeConflicts(ownSnake, otherSnakes, scoredDirections);
+
+  // If the snake is hungry, boost the score of the direction that will
+  // lead us to the closest unblocked food.
+  if (ownSnake.health < MIN_HEALTH) {    
+    setScoreClosestFoodDirection(
+      ownSnake.body.data[0],
+      snakeBodies,
+      food,
+      scoredDirections
+    );
+
+    scoredDirections.motivations.push('hungry');
+  }
 
   // Try to estimate the next moves and how safe they are.
   checkNextMoves(
@@ -88,22 +102,6 @@ export function getScoredDirections(
     boardHeight,
     scoredDirections,
   )*/
-
-  // If the snake is hungry, boost the score of the direction that will
-  // lead us to the closest unblocked food.
-  if (ownSnake.health < MIN_HEALTH) {    
-    setScoreClosestFoodDirection(
-      ownSnake.body.data[0],
-      snakeBodies,
-      food,
-      scoredDirections
-    );
-
-    scoredDirections.motivations.push('hungry');
-  }
-
-  // See if there is a snake that we can immediately destroy.
-  setAttackIncentive(ownSnake, otherSnakes, scoredDirections);
 
   return scoredDirections;
 }
