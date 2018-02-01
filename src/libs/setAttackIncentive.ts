@@ -1,40 +1,38 @@
 import { Snake, ScoredDirections, Point } from "../types/battlesnake";
-import { adjustScoredDirection } from "./snakeLibs";
+import { adjustScoredDirection, getPossibleMovesForPoint } from "./snakeLibs";
 import * as _ from "lodash";
 
+const SCORE_VALUE = 0.75;
+
 export function setAttackIncentive(
-    ownSnake: Snake,
-    snakeBodies: Array<Snake>,
-    scoredDirections: ScoredDirections
-  ) {
-    const snakeHead: Point = ownSnake.body.data[0];
-  
-    _.each(snakeBodies, (otherSnake: Snake) => {
-      const otherSnakeBody = otherSnake.body.data;
-      if (otherSnake.length >= ownSnake.length) return;
-  
-      const otherSnakeHead = otherSnakeBody[0];
-  
-      if (
-        snakeHead.x - 1 === otherSnakeHead.x + 1 &&
-        snakeHead.y === otherSnakeHead.y
-      )
-        adjustScoredDirection(scoredDirections, "left", +0.75);
-      if (
-        snakeHead.y - 1 === otherSnakeHead.y + 1 &&
-        snakeHead.x === otherSnakeHead.x
-      )
-        adjustScoredDirection(scoredDirections, "up", +0.75);
-      if (
-        snakeHead.x + 1 === otherSnakeHead.x - 1 &&
-        snakeHead.y === otherSnakeHead.y
-      )
-        adjustScoredDirection(scoredDirections, "right", +0.75);
-      if (
-        snakeHead.y + 1 === otherSnakeHead.y - 1 &&
-        snakeHead.x === otherSnakeHead.x
-      )
-        adjustScoredDirection(scoredDirections, "down", +0.75);
+  ownSnake: Snake,
+  otherSnakes: Array<Snake>,
+  scoredDirections: ScoredDirections
+) {
+  const snakeHead: Point = ownSnake.body.data[0];
+
+  _.each(otherSnakes, (otherSnake: Snake) => {
+    if (otherSnake.length >= ownSnake.length) return;
+
+    const otherSnakeHead = otherSnake.body.data[0];
+    const ownSnakeMoves: Array<Point> = getPossibleMovesForPoint(snakeHead);
+    const otherSnakeMoves: Array<Point> = getPossibleMovesForPoint(
+      otherSnakeHead
+    );
+
+    _.each(ownSnakeMoves, (ownMove: Point) => {
+      _.each(otherSnakeMoves, (otherMove: Point) => {
+        if (ownMove.x === otherMove.x && ownMove.x === otherMove.y) {
+          if (snakeHead.x > ownMove.x)
+            adjustScoredDirection(scoredDirections, "left", SCORE_VALUE);
+          if (snakeHead.x < ownMove.x)
+            adjustScoredDirection(scoredDirections, "right", SCORE_VALUE);
+          if (snakeHead.y > ownMove.y)
+            adjustScoredDirection(scoredDirections, "up", SCORE_VALUE);
+          if (snakeHead.y < ownMove.y)
+            adjustScoredDirection(scoredDirections, "down", SCORE_VALUE);
+        }
+      });
     });
-  }
-  
+  });
+}

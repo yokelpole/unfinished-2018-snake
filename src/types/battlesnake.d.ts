@@ -62,7 +62,7 @@ export type Point = {
     x: number,
     y: number,
     object: string,
-    type: string,
+    type?: string,
 };
 
 export interface ScoredDirections {
@@ -70,6 +70,7 @@ export interface ScoredDirections {
     down: number,
     left: number,
     right: number,
+    motivations: Array<string>,
 }
 
 export interface Snake {

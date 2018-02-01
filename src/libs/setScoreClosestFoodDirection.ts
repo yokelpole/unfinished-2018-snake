@@ -12,7 +12,6 @@ export function setScoreClosestFoodDirection(
   let closestFood;
 
   // TODO: Add multiplier based on the largest snake on the table.
-
   _.each(foodPoints, (food: Point) => {
     const movesX = food.x - snakeHead.x;
     const movesY = food.y - snakeHead.y;
@@ -37,7 +36,7 @@ export function setScoreClosestFoodDirection(
     if (isSafe) {
       closestFoodMoves = moveCount;
 
-      if (Math.abs(movesX) > Math.abs(movesY)) {
+      if (Math.abs(movesY) > Math.abs(movesX)) {
         if (movesY > 0) adjustScoredDirection(scoredDirections, "down", +0.66);
         else adjustScoredDirection(scoredDirections, "up", +0.66);
       } else {

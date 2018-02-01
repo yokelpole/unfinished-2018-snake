@@ -22,11 +22,11 @@ export function setCollisionPossibilities(
     if (snakeHead.y + 1 === height)
       adjustScoredDirection(scoredDirections, "down", 2.0 * -severity);
   
-    _.each(otherBodies, (point: Point) => {
+    _.each(otherBodies, (point: Point) => {  
       if (snakeHealth <= MIN_HEALTH && point.type === "food") return;
-  
+
       // Make food less hostile to the snake when not hungry.
-      const scoreMultiplier = point.type === "snake" ? 1.0 : 0.0;
+      const scoreMultiplier = point.type === "snake" ? 1.0 : 0.1;
   
       // Make sure there are no immediate conflicts with other items on the board.
       if (snakeHead.x + 1 === point.x && snakeHead.y === point.y)
