@@ -2,7 +2,7 @@ import { Snake, ScoredDirections, Point } from "../types/battlesnake";
 import { adjustScoredDirection, getPossibleMovesForPoint } from "./snakeLibs";
 import * as _ from "lodash";
 
-const SCORE_VALUE = 0.6;
+const SCORE_VALUE = 0.66;
 
 export function setAttackIncentive(
   ownSnake: Snake,

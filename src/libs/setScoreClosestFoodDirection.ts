@@ -2,7 +2,7 @@ import { Point, ScoredDirections } from "../types/battlesnake";
 import { adjustScoredDirection } from "./snakeLibs";
 import * as _ from "lodash";
 
-const SCORE_VALUE = 0.75;
+const SCORE_VALUE = 0.5;
 
 export function setScoreClosestFoodDirection(
   snakeHead: Point,
