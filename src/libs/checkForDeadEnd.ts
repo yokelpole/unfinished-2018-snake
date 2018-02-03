@@ -2,7 +2,7 @@ import { Snake, Point, ScoredDirections } from "../types/battlesnake";
 import { adjustScoredDirection } from "./snakeLibs";
 import * as _ from "lodash";
 
-const SCORE_VALUE = -0.75;
+const SCORE_VALUE = -0.9;
 
 export function checkForDeadEnds(
   ownSnake: Snake,
