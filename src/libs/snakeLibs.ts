@@ -47,8 +47,8 @@ export function getScoredDirections(
   ownSnake: Snake,
   otherSnakes: Array<Snake>,
   food: Array<Point>,
-  boardWidth: Number,
-  boardHeight: Number
+  boardWidth: number,
+  boardHeight: number
 ): ScoredDirections {
   const snakeBodies: Array<Point> = _(_.union([ownSnake], otherSnakes))
     .map(snake => snake.body.data)
@@ -104,13 +104,14 @@ export function getScoredDirections(
     scoredDirections
   );
 
-  /*checkForDeadEnds(
-    ownSnake.body.data[0],
+  // Try to make sure that the snake doesn't willingly enter dead-ends.
+  checkForDeadEnds(
+    ownSnake,
     snakeBodies,
     boardWidth,
     boardHeight,
     scoredDirections,
-  )*/
+  )
 
   return scoredDirections;
 }
