@@ -3,7 +3,7 @@ import { adjustScoredDirection } from './snakeLibs';
 import * as _ from "lodash";
 
 const NEGATIVE_SCORE_VALUE = -0.9;
-const POSITIVE_SCORE_VALUE = 0.2;
+const POSITIVE_SCORE_VALUE = 0.5;
 
 export function checkForDeadEnds(
   ownSnake: Snake,
