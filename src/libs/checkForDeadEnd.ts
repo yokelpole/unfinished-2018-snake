@@ -1,8 +1,9 @@
 import { Snake, Point, ScoredDirections } from "../types/battlesnake";
-import { adjustScoredDirection } from "./snakeLibs";
+import { adjustScoredDirection } from './snakeLibs';
 import * as _ from "lodash";
 
-const SCORE_VALUE = -0.9;
+const NEGATIVE_SCORE_VALUE = -0.9;
+const POSITIVE_SCORE_VALUE = 0.2;
 
 export function checkForDeadEnds(
   ownSnake: Snake,
@@ -49,14 +50,26 @@ export function checkForDeadEnds(
     _.filter(row, point => point === true)
   ).length;
 
-  if (leftOpenSpaces < ownSnake.length)
-    adjustScoredDirection(scoredDirections, "left", SCORE_VALUE);
-  if (rightOpenSpaces < ownSnake.length)
-    adjustScoredDirection(scoredDirections, "right", SCORE_VALUE);
-  if (upOpenSpaces < ownSnake.length)
-    adjustScoredDirection(scoredDirections, "up", SCORE_VALUE);
-  if (downOpenSpaces < ownSnake.length)
-    adjustScoredDirection(scoredDirections, "down", SCORE_VALUE);
+  if (leftOpenSpaces <= ownSnake.length)
+    adjustScoredDirection(scoredDirections, "left", NEGATIVE_SCORE_VALUE);
+  if (rightOpenSpaces <= ownSnake.length)
+    adjustScoredDirection(scoredDirections, "right", NEGATIVE_SCORE_VALUE);
+  if (upOpenSpaces <= ownSnake.length)
+    adjustScoredDirection(scoredDirections, "up", NEGATIVE_SCORE_VALUE);
+  if (downOpenSpaces <= ownSnake.length)
+    adjustScoredDirection(scoredDirections, "down", NEGATIVE_SCORE_VALUE);
+
+  // Provide a slight boost to the direction that has the most open spaces.
+  const highestScore = _.max([leftOpenSpaces, rightOpenSpaces, upOpenSpaces, downOpenSpaces]);
+
+  if (highestScore === leftOpenSpaces && leftOpenSpaces > ownSnake.length)
+    adjustScoredDirection(scoredDirections, "left", POSITIVE_SCORE_VALUE);
+  if (highestScore === rightOpenSpaces && rightOpenSpaces > ownSnake.length)
+    adjustScoredDirection(scoredDirections, "right", POSITIVE_SCORE_VALUE);
+  if (highestScore === upOpenSpaces && upOpenSpaces > ownSnake.length)
+    adjustScoredDirection(scoredDirections, "up", POSITIVE_SCORE_VALUE);
+  if (highestScore === downOpenSpaces && downOpenSpaces > ownSnake.length)
+    adjustScoredDirection(scoredDirections, "down", POSITIVE_SCORE_VALUE);
 }
 
 function floodCheck(
