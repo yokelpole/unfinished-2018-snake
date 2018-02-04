@@ -91,7 +91,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   console.log(`### GAME TURN ${requestData.turn}`);
   console.log(responseData);
   console.log("### REQUEST DATA");
-  console.log(requestData);
+  console.log(JSON.stringify(requestData));
   return res.json(responseData);
 });
 
