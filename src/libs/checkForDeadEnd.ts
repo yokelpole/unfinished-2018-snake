@@ -1,8 +1,8 @@
 import { Snake, Point, ScoredDirections } from "../types/battlesnake";
-import { adjustScoredDirection } from './snakeLibs';
+import { adjustScoredDirection } from "./snakeLibs";
 import * as _ from "lodash";
 
-const NEGATIVE_SCORE_VALUE = -0.9;
+const NEGATIVE_SCORE_VALUE = -0.5;
 const POSITIVE_SCORE_VALUE = 0.5;
 
 export function checkForDeadEnds(
@@ -46,7 +46,7 @@ export function checkForDeadEnds(
   const upOpenSpaces = _.flatMap(upObstacleArray, row =>
     _.filter(row, point => point === true)
   ).length;
-  const downOpenSpaces = _.flatMap(upObstacleArray, row =>
+  const downOpenSpaces = _.flatMap(downObstacleArray, row =>
     _.filter(row, point => point === true)
   ).length;
 
@@ -60,7 +60,12 @@ export function checkForDeadEnds(
     adjustScoredDirection(scoredDirections, "down", NEGATIVE_SCORE_VALUE);
 
   // Provide a slight boost to the direction that has the most open spaces.
-  const highestScore = _.max([leftOpenSpaces, rightOpenSpaces, upOpenSpaces, downOpenSpaces]);
+  const highestScore = _.max([
+    leftOpenSpaces,
+    rightOpenSpaces,
+    upOpenSpaces,
+    downOpenSpaces
+  ]);
 
   if (highestScore === leftOpenSpaces && leftOpenSpaces > ownSnake.length)
     adjustScoredDirection(scoredDirections, "left", POSITIVE_SCORE_VALUE);

@@ -90,8 +90,8 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   const responseData: MoveResponseData = { move, taunt };
   console.log(`### GAME TURN ${requestData.turn}`);
   console.log(responseData);
-  console.log("### REQUEST DATA");
-  console.log(JSON.stringify(requestData));
+  //console.log("### REQUEST DATA");
+  //console.log(JSON.stringify(requestData));
   return res.json(responseData);
 });
 
