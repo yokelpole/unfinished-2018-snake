@@ -3,7 +3,7 @@ import { adjustScoredDirection } from "./snakeLibs";
 import * as _ from "lodash";
 
 const NEGATIVE_SCORE_VALUE = -0.5;
-const POSITIVE_SCORE_VALUE = 0.5;
+const POSITIVE_SCORE_VALUE = 0.25;
 
 export function checkForDeadEnds(
   testedSnake: Snake,
@@ -66,14 +66,18 @@ export function checkForDeadEnds(
     upOpenSpaces,
     downOpenSpaces
   ]);
+  
+  console.log('### DIRECTION OF MAX');
+  console.log(highestScore);
+  console.log(scoredDirections);
 
-  if (highestScore === leftOpenSpaces && leftOpenSpaces > testedSnake.length)
+  if (highestScore === leftOpenSpaces /*&& leftOpenSpaces > testedSnake.length*/)
     adjustScoredDirection(scoredDirections, "left", POSITIVE_SCORE_VALUE);
-  if (highestScore === rightOpenSpaces && rightOpenSpaces > testedSnake.length)
+  if (highestScore === rightOpenSpaces /*&& rightOpenSpaces > testedSnake.length*/)
     adjustScoredDirection(scoredDirections, "right", POSITIVE_SCORE_VALUE);
-  if (highestScore === upOpenSpaces && upOpenSpaces > testedSnake.length)
+  if (highestScore === upOpenSpaces /*&& upOpenSpaces > testedSnake.length*/)
     adjustScoredDirection(scoredDirections, "up", POSITIVE_SCORE_VALUE);
-  if (highestScore === downOpenSpaces && downOpenSpaces > testedSnake.length)
+  if (highestScore === downOpenSpaces /*&& downOpenSpaces > testedSnake.length*/)
     adjustScoredDirection(scoredDirections, "down", POSITIVE_SCORE_VALUE);
 }
 
