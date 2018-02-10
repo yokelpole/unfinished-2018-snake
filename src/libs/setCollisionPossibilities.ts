@@ -39,7 +39,11 @@ export function setCollisionPossibilities(
     if (snakeHealth <= MIN_HEALTH && point.type === "food") return;
 
     // Make food less hostile to the snake when not hungry.
-    const scoreMultiplier = point.type === "snake" ? 1.0 : 0.1;
+    const scoreMultiplier = {
+      snake: 1.0,
+      possibleSnake: 0.5,
+      food: 0.1
+    }[point.type];
 
     // Make sure there are no immediate conflicts with other items on the board.
     if (snakeHead.x + 1 === point.x && snakeHead.y === point.y)

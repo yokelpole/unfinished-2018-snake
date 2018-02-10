@@ -33,9 +33,9 @@ router.post(
     // Response data
     const responseData: StartResponseData = {
       color: "#FFFF00",
-      name: "Guy Fieri",
+      name: "Protosnake",
       head_url: "http://www.placecage.com/c/200/200", // optional, but encouraged!
-      taunt: "Time to hop in my convertible and go eat some grease!" // optional, but encouraged!
+      taunt: "Compiling..." // optional, but encouraged!
     };
 
     return res.json(responseData);
@@ -60,10 +60,55 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     .value();
   const food = requestData.food.data;
 
+  // Try to estimate what each snake's optimal next move would be.
+  // TODO: Make this able to be executed multiple times with lessening scores.
+  const possibleNextMovesForOtherSnakes: Array<Snake> = _.map(
+    otherSnakes,
+    (snake: Snake) => {
+      const scoredDirections = snakeLibs.getScoredDirections(
+        snake,
+        _(allSnakes)
+          .reject({ id: snake.id })
+          .value(),
+        food,
+        requestData.width,
+        requestData.height
+      );
+
+      // Add to the snake where there is a possible scored direction.
+      const maxValue = _.max(_.values(scoredDirections));
+      const topMoves = _.keys(_.pickBy(scoredDirections, x => x === maxValue));
+
+      // TODO: Check to see if the snake will gain an extra length point.
+      // TODO: Treat where the snake actually is differently than where the snake could be.
+      const snakeHead = snake.body.data[0];
+      _.each(topMoves, direction => {
+        const deviation = direction === "up" || direction === "left" ? -1 : +1;
+        snake.body.data.push({
+          x:
+            direction === "left" || direction === "right"
+              ? snakeHead.x + deviation
+              : snakeHead.x,
+          y:
+            direction === "up" || direction === "down"
+              ? snakeHead.y + deviation
+              : snakeHead.y,
+          object: "point",
+          type: "possible_snake"
+        });
+      });
+
+      return snake;
+    }
+  );
+
+  console.log('### GOT HERE');
+  console.log(possibleNextMovesForOtherSnakes);
+
   // Assign the directions that we can go without hitting a snake or food.
   const scoredDirections: ScoredDirections = snakeLibs.getScoredDirections(
     testedSnake,
-    otherSnakes,
+    possibleNextMovesForOtherSnakes,
     food,
     requestData.width,
     requestData.height
@@ -77,14 +122,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     _.keys(scoredDirections),
     direction => scoredDirections[direction]
   );
-  const taunt = _.shuffle([
-    "This is Gangsta!",
-    "This is Money!",
-    "We’re Riding the Bus to Flavortown!",
-    "Holy [food item], Batman!",
-    "Peace, love and taco grease!",
-    "I’ve always been an eccentric, a rocker at heart. I can’t play the guitar, but I can play the griddle."
-  ])[0];
+  const taunt = "I am under construction!";
 
   // Response data
   const responseData: MoveResponseData = { move, taunt };

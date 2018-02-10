@@ -7,7 +7,7 @@ import { setScoreClosestFoodDirection } from "./setScoreClosestFoodDirection";
 import { Snake, Point, ScoredDirections } from "../types/battlesnake";
 import { checkForDeadEnds } from "./checkForDeadEnd";
 
-export const MIN_HEALTH = 75;
+export const MIN_HEALTH = 80;
 
 export function adjustScoredDirection(
   scoredDirection: ScoredDirections,
@@ -56,7 +56,7 @@ export function getScoredDirections(
     .flatten()
     .value();
 
-  // We also set the type of point here so food is scored less hostile than a snake.
+  // Set the type of point here so food can be told apart from snakes.
   const snakeBodiesAndFood: Array<Point> = _.union(
     _.flatten(_.each(snakeBodies, point => (point.type = "snake"))),
     _.each(food, point => (point.type = "food"))
@@ -112,8 +112,6 @@ export function getScoredDirections(
     boardHeight,
     scoredDirections,
   );
-
-  // Check the ideal moves for the other snakes' next moves.
 
   return scoredDirections;
 }
