@@ -6,7 +6,7 @@ const NEGATIVE_SCORE_VALUE = -0.5;
 const POSITIVE_SCORE_VALUE = 0.5;
 
 export function checkForDeadEnds(
-  ownSnake: Snake,
+  testedSnake: Snake,
   snakeBodies: Array<Point>,
   width: number,
   height: number,
@@ -14,7 +14,7 @@ export function checkForDeadEnds(
 ) {
   // Subtract the score from one side if there is less 'volume'
   // to that direction.
-  const snakeHead = ownSnake.body.data[0];
+  const snakeHead = testedSnake.body.data[0];
 
   // Convert the Point object array into a 2d array.
   const obstacleArray = [];
@@ -50,13 +50,13 @@ export function checkForDeadEnds(
     _.filter(row, point => point === true)
   ).length;
 
-  if (leftOpenSpaces <= ownSnake.length)
+  if (leftOpenSpaces <= testedSnake.length)
     adjustScoredDirection(scoredDirections, "left", NEGATIVE_SCORE_VALUE);
-  if (rightOpenSpaces <= ownSnake.length)
+  if (rightOpenSpaces <= testedSnake.length)
     adjustScoredDirection(scoredDirections, "right", NEGATIVE_SCORE_VALUE);
-  if (upOpenSpaces <= ownSnake.length)
+  if (upOpenSpaces <= testedSnake.length)
     adjustScoredDirection(scoredDirections, "up", NEGATIVE_SCORE_VALUE);
-  if (downOpenSpaces <= ownSnake.length)
+  if (downOpenSpaces <= testedSnake.length)
     adjustScoredDirection(scoredDirections, "down", NEGATIVE_SCORE_VALUE);
 
   // Provide a slight boost to the direction that has the most open spaces.
@@ -67,13 +67,13 @@ export function checkForDeadEnds(
     downOpenSpaces
   ]);
 
-  if (highestScore === leftOpenSpaces && leftOpenSpaces > ownSnake.length)
+  if (highestScore === leftOpenSpaces && leftOpenSpaces > testedSnake.length)
     adjustScoredDirection(scoredDirections, "left", POSITIVE_SCORE_VALUE);
-  if (highestScore === rightOpenSpaces && rightOpenSpaces > ownSnake.length)
+  if (highestScore === rightOpenSpaces && rightOpenSpaces > testedSnake.length)
     adjustScoredDirection(scoredDirections, "right", POSITIVE_SCORE_VALUE);
-  if (highestScore === upOpenSpaces && upOpenSpaces > ownSnake.length)
+  if (highestScore === upOpenSpaces && upOpenSpaces > testedSnake.length)
     adjustScoredDirection(scoredDirections, "up", POSITIVE_SCORE_VALUE);
-  if (highestScore === downOpenSpaces && downOpenSpaces > ownSnake.length)
+  if (highestScore === downOpenSpaces && downOpenSpaces > testedSnake.length)
     adjustScoredDirection(scoredDirections, "down", POSITIVE_SCORE_VALUE);
 }
 

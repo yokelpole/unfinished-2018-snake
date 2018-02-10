@@ -5,22 +5,22 @@ import * as _ from "lodash";
 const SCORE_VALUE = 0.66;
 
 export function setAttackIncentive(
-  ownSnake: Snake,
+  testedSnake: Snake,
   otherSnakes: Array<Snake>,
   scoredDirections: ScoredDirections
 ) {
-  const snakeHead: Point = ownSnake.body.data[0];
+  const snakeHead: Point = testedSnake.body.data[0];
 
   _.each(otherSnakes, (otherSnake: Snake) => {
-    if (ownSnake.length <= otherSnake.length) return;
+    if (testedSnake.length <= otherSnake.length) return;
 
     const otherSnakeHead = otherSnake.body.data[0];
-    const ownSnakeMoves: Array<Point> = getPossibleMovesForPoint(snakeHead);
+    const testedSnakeMoves: Array<Point> = getPossibleMovesForPoint(snakeHead);
     const otherSnakeMoves: Array<Point> = getPossibleMovesForPoint(
       otherSnakeHead
     );
 
-    _.each(ownSnakeMoves, (ownMove: Point) => {
+    _.each(testedSnakeMoves, (ownMove: Point) => {
       _.each(otherSnakeMoves, (otherMove: Point) => {
         if (ownMove.x === otherMove.x && ownMove.y === otherMove.y) {
           if (snakeHead.x > ownMove.x)

@@ -47,7 +47,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   const requestData = req.body;
 
   // Own snake data.
-  const ownSnake: Snake = snakeLibs.pruneSnakesTailsIfNotEaten([
+  const testedSnake: Snake = snakeLibs.pruneSnakesTailsIfNotEaten([
     requestData.you
   ])[0];
 
@@ -56,13 +56,13 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     requestData.snakes.data
   );
   const otherSnakes: Array<Snake> = _(allSnakes)
-    .reject({ id: ownSnake.id })
+    .reject({ id: testedSnake.id })
     .value();
   const food = requestData.food.data;
 
   // Assign the directions that we can go without hitting a snake or food.
   const scoredDirections: ScoredDirections = snakeLibs.getScoredDirections(
-    ownSnake,
+    testedSnake,
     otherSnakes,
     food,
     requestData.width,

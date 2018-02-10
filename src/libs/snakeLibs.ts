@@ -44,13 +44,13 @@ export function pruneSnakesTailsIfNotEaten(snakes): Array<Snake> {
 }
 
 export function getScoredDirections(
-  ownSnake: Snake,
+  testedSnake: Snake,
   otherSnakes: Array<Snake>,
   food: Array<Point>,
   boardWidth: number,
   boardHeight: number
 ): ScoredDirections {
-  const snakeBodies: Array<Point> = _(_.union([ownSnake], otherSnakes))
+  const snakeBodies: Array<Point> = _(_.union([testedSnake], otherSnakes))
     .map(snake => snake.body.data)
     .union()
     .flatten()
@@ -71,23 +71,23 @@ export function getScoredDirections(
 
   // Set immediate collision possibilities.
   setCollisionPossibilities(
-    ownSnake.body.data[0],
-    ownSnake.health,
-    ownSnake.health > MIN_HEALTH ? snakeBodiesAndFood : snakeBodies,
+    testedSnake.body.data[0],
+    testedSnake.health,
+    testedSnake.health > MIN_HEALTH ? snakeBodiesAndFood : snakeBodies,
     boardWidth,
     boardHeight,
     scoredDirections
   );
 
   // Fight or flight.
-  setAvoidBiggerSnakeHeads(ownSnake, otherSnakes, scoredDirections);
-  setAttackIncentive(ownSnake, otherSnakes, scoredDirections);
+  setAvoidBiggerSnakeHeads(testedSnake, otherSnakes, scoredDirections);
+  setAttackIncentive(testedSnake, otherSnakes, scoredDirections);
 
   // If the snake is hungry, boost the score of the direction that will
   // lead us to the closest unblocked food.
-  if (ownSnake.health < MIN_HEALTH) {    
+  if (testedSnake.health < MIN_HEALTH) {    
     setScoreClosestFoodDirection(
-      ownSnake.body.data[0],
+      testedSnake.body.data[0],
       snakeBodies,
       food,
       scoredDirections
@@ -96,9 +96,9 @@ export function getScoredDirections(
 
   // Try to estimate the next moves and how safe they are.
   checkNextMoves(
-    ownSnake.body.data[0],
-    ownSnake.health,
-    ownSnake.health > MIN_HEALTH ? snakeBodiesAndFood : snakeBodies,
+    testedSnake.body.data[0],
+    testedSnake.health,
+    testedSnake.health > MIN_HEALTH ? snakeBodiesAndFood : snakeBodies,
     boardWidth,
     boardHeight,
     scoredDirections
@@ -106,12 +106,14 @@ export function getScoredDirections(
 
   // Try to make sure that the snake doesn't willingly enter dead-ends.
   checkForDeadEnds(
-    ownSnake,
+    testedSnake,
     snakeBodies,
     boardWidth,
     boardHeight,
     scoredDirections,
-  )
+  );
+
+  // Check the ideal moves for the other snakes' next moves.
 
   return scoredDirections;
 }
