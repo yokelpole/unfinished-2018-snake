@@ -43,6 +43,17 @@ export function pruneSnakesTailsIfNotEaten(snakes): Array<Snake> {
   return snakeArrayCopy;
 }
 
+export function otherSnakesAreBigger(
+  testedSnake: Snake,
+  otherSnakes: Array<Snake>
+) {
+  // If there is one snake left and it's bigger then return true.
+  if (otherSnakes.length === 1 && otherSnakes[0].length > testedSnake.length)
+    return true;
+
+  return false;
+}
+
 export function getScoredDirections(
   testedSnake: Snake,
   otherSnakes: Array<Snake>,
@@ -90,7 +101,10 @@ export function getScoredDirections(
 
   // If the snake is hungry, boost the score of the direction that will
   // lead us to the closest unblocked food.
-  if (testedSnake.health < MIN_HEALTH) {
+  if (
+    testedSnake.health < MIN_HEALTH ||
+    otherSnakesAreBigger(testedSnake, otherSnakes)
+  ) {
     setScoreClosestFoodDirection(
       testedSnake.body.data[0],
       snakeBodies,
