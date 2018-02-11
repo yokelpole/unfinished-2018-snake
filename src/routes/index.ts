@@ -79,9 +79,6 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     requestData.height
   );
 
-  console.log("### SCORED DIRECTIONS");
-  console.log(scoredDirections);
-
   // Choose the highest value in the scored directions and go with it.
   const move = _.maxBy(
     _.keys(scoredDirections),
@@ -92,9 +89,9 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   // Response data
   const responseData: MoveResponseData = { move, taunt };
   console.log(`### GAME TURN ${requestData.turn}`);
+  console.log("### SCORED DIRECTIONS");
+  console.log(scoredDirections);
   console.log(responseData);
-  //console.log("### REQUEST DATA");
-  //console.log(JSON.stringify(requestData));
   return res.json(responseData);
 });
 
