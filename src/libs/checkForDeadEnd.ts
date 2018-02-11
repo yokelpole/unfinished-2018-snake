@@ -64,10 +64,6 @@ export function checkForDeadEnds(
     upOpenSpaces,
     downOpenSpaces
   ]);
-  
-  console.log('### DIRECTION OF MAX');
-  console.log(highestScore);
-  console.log(scoredDirections);
 
   if (highestScore === leftOpenSpaces /*&& leftOpenSpaces > testedSnake.length*/)
     adjustScoredDirection(scoredDirections, "left", POSITIVE_SCORE_VALUE);
