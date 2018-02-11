@@ -41,7 +41,7 @@ export function setCollisionPossibilities(
     // Make food less hostile to the snake when not hungry.
     const scoreMultiplier = {
       snake: 1.0,
-      possibleSnake: 0.5,
+      possibleSnake: 0.25,
       food: 0.1
     }[point.type];
 

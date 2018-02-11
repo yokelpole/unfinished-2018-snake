@@ -26,7 +26,7 @@ function determineNextMoves(testedSnakes: Array<Snake>, allSnakes: Array<Snake>,
           requestData.width,
           requestData.height
         );
-    
+
         // Add to the snake where there is a possible scored direction.
         const maxValue = _.max(_.values(scoredDirections));
         const topMoves = _.keys(_.pickBy(scoredDirections, x => x === maxValue));
@@ -46,7 +46,7 @@ function determineNextMoves(testedSnakes: Array<Snake>, allSnakes: Array<Snake>,
                 ? snakeHead.y + deviation
                 : snakeHead.y,
             object: "point",
-            type: "possible_snake"
+            type: "possibleSnake"
           });
         });
     

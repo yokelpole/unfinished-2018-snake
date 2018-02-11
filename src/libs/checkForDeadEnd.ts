@@ -3,7 +3,7 @@ import { adjustScoredDirection } from "./snakeLibs";
 import * as _ from "lodash";
 
 const NEGATIVE_SCORE_VALUE = -0.5;
-const POSITIVE_SCORE_VALUE = 0.25;
+const POSITIVE_SCORE_VALUE = 0.5;
 
 export function checkForDeadEnds(
   testedSnake: Snake,
@@ -12,8 +12,6 @@ export function checkForDeadEnds(
   height: number,
   scoredDirections: ScoredDirections
 ) {
-  // Subtract the score from one side if there is less 'volume'
-  // to that direction.
   const snakeHead = testedSnake.body.data[0];
 
   // Convert the Point object array into a 2d array.

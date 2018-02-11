@@ -58,7 +58,12 @@ export function getScoredDirections(
 
   // Set the type of point here so food can be told apart from snakes.
   const snakeBodiesAndFood: Array<Point> = _.union(
-    _.flatten(_.each(snakeBodies, point => (point.type = "snake"))),
+    _.flatten(
+      _.each(
+        snakeBodies,
+        point => (point.type = !point.type ? "snake" : point.type)
+      )
+    ),
     _.each(food, point => (point.type = "food"))
   );
 
@@ -66,7 +71,7 @@ export function getScoredDirections(
     up: 1.5,
     down: 1.5,
     left: 1.5,
-    right: 1.5,
+    right: 1.5
   };
 
   // Set immediate collision possibilities.
@@ -85,7 +90,7 @@ export function getScoredDirections(
 
   // If the snake is hungry, boost the score of the direction that will
   // lead us to the closest unblocked food.
-  if (testedSnake.health < MIN_HEALTH) {    
+  if (testedSnake.health < MIN_HEALTH) {
     setScoreClosestFoodDirection(
       testedSnake.body.data[0],
       snakeBodies,
@@ -110,9 +115,8 @@ export function getScoredDirections(
     snakeBodies,
     boardWidth,
     boardHeight,
-    scoredDirections,
+    scoredDirections
   );
 
   return scoredDirections;
 }
-
