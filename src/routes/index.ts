@@ -69,7 +69,7 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     food,
     requestData
   );
-
+  
   // Assign the directions that we can go without hitting a snake or food.
   const scoredDirections: ScoredDirections = snakeLibs.getScoredDirections(
     testedSnake,

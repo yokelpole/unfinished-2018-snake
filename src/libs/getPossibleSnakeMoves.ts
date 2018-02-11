@@ -36,7 +36,7 @@ function determineNextMoves(testedSnakes: Array<Snake>, allSnakes: Array<Snake>,
         const snakeHead = snake.body.data[0];
         _.each(topMoves, direction => {
           const deviation = direction === "up" || direction === "left" ? -1 : +1;
-          snake.body.data.push({
+          const newPoint = ({
             x:
               direction === "left" || direction === "right"
                 ? snakeHead.x + deviation
@@ -48,8 +48,13 @@ function determineNextMoves(testedSnakes: Array<Snake>, allSnakes: Array<Snake>,
             object: "point",
             type: "possibleSnake"
           });
+
+          if (newPoint.x < 0 || newPoint.x > requestData.width) return;
+          if (newPoint.y < 0 || newPoint.y > requestData.height) return;
+
+          snake.body.data.push(newPoint);
         });
-    
+            
         return snake;
       });
 }
