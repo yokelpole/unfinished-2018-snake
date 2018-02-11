@@ -14,9 +14,6 @@ export function adjustScoredDirection(
   direction: string,
   amount
 ) {
-  // console.log("### ADJUSTING SCORE DIRECTION");
-  // console.log(direction);
-  // console.log(amount);
   if (scoredDirection[direction] <= 0 && amount > 0) return;
 
   scoredDirection[direction] += amount;
