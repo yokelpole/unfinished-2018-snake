@@ -20,6 +20,8 @@ interface BattleSnakeRouter {
     cb: (req: StartRequest, res: StartResponse) => any
   ): void;
   post(route: "/move", cb: (req: MoveRequest, res: MoveResponse) => any): void;
+  post(route: "/end", cb: (req, res) => any): void;
+  post(route: "/ping", cb: (req, res) => any): void;
 }
 
 const router: BattleSnakeRouter = express.Router();
@@ -104,5 +106,8 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   console.log(responseData);
   return res.json(responseData);
 });
+
+router.post("/end", (request, response) => response.json({}));
+router.post("/ping", (request, response) => response.json({}));
 
 module.exports = router;
