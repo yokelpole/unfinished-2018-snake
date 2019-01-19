@@ -12,7 +12,7 @@ export function checkForDeadEnds(
   height: number,
   scoredDirections: ScoredDirections
 ) {
-  const snakeHead = testedSnake.body.data[0];
+  const snakeHead = testedSnake.body[0];
 
   // Convert the Point object array into a 2d array.
   const obstacleArray = [];

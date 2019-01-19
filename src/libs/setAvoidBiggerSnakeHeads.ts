@@ -10,12 +10,12 @@ export function setAvoidBiggerSnakeHeads(
   scoredDirections: ScoredDirections
 ) {
   // Don't go a way that can result in a collision with a larger snake.
-  const snakeHead = testedSnake.body.data[0];
+  const snakeHead = testedSnake.body[0];
 
   _.each(otherSnakes, (otherSnake: Snake) => {
     if (testedSnake.length > otherSnake.length) return;
 
-    const otherSnakeHead = otherSnake.body.data[0];
+    const otherSnakeHead = otherSnake.body[0];
     const testedSnakeMoves: Array<Point> = getPossibleMovesForPoint(snakeHead);
     const otherSnakeMoves: Array<Point> = getPossibleMovesForPoint(
       otherSnakeHead

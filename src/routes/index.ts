@@ -46,20 +46,26 @@ router.post(
 // Handle POST request to '/move'
 router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   const requestData = req.body;
+  console.log('### IN MOVE');
+  console.log(requestData);
 
   // Own snake data.
   const testedSnake: Snake = snakeLibs.pruneSnakesTailsIfNotEaten([
     requestData.you
   ])[0];
 
+  console.log('### PAST GETTING SNAKE TAILS PRUNED');
+
   // Obstacles.
   const allSnakes: Array<Snake> = snakeLibs.pruneSnakesTailsIfNotEaten(
-    requestData.snakes.data
+    requestData.board.snakes
   );
   const otherSnakes: Array<Snake> = _(allSnakes)
     .reject({ id: testedSnake.id })
     .value();
-  const food = requestData.food.data;
+  const food = requestData.board.food;
+
+  console.log('### GOT PAST THE OBSTACLES');
 
   // Try to estimate what each snake's optimal next move would be.
   // TODO: Make this able to be executed multiple times with lessening scores.
@@ -69,25 +75,29 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     food,
     requestData
   );
+
+  console.log('### DONE ESTIMATING THE MOVES FOR SNAKES');
   
   // Assign the directions that we can go without hitting a snake or food.
   const scoredDirections: ScoredDirections = snakeLibs.getScoredDirections(
     testedSnake,
     possibleNextMovesForOtherSnakes,
     food,
-    requestData.width,
-    requestData.height
+    requestData.board.width,
+    requestData.board.height
   );
+
+    console.log('### DONE SCORING DIRECTIONS');
 
   // Choose the highest value in the scored directions and go with it.
   const move = _.maxBy(
     _.keys(scoredDirections),
     direction => scoredDirections[direction]
   );
-  const taunt = "I am under construction!";
+  console.log('### ASSEMBLING RESPONSE DATA');
 
   // Response data
-  const responseData: MoveResponseData = { move, taunt };
+  const responseData: MoveResponseData = { move };
   console.log(`### GAME TURN ${requestData.turn}`);
   console.log("### SCORED DIRECTIONS");
   console.log(scoredDirections);

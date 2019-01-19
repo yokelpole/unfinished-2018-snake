@@ -32,9 +32,10 @@ export function pruneSnakesTailsIfNotEaten(snakes): Array<Snake> {
   const snakeArrayCopy = _.cloneDeep(snakes);
 
   _.each(snakeArrayCopy, (snake: Snake) => {
-    if (_.uniq(snake.body.data).length === snake.body.data.length) return;
+    console.log(snake.body);
+    if (_.uniq(snake.body).length === snake.body.length) return;
 
-    snake.body.data.pop();
+    snake.body.pop();
   });
 
   return snakeArrayCopy;
@@ -59,7 +60,7 @@ export function getScoredDirections(
   boardHeight: number
 ): ScoredDirections {
   const snakeBodies: Array<Point> = _(_.union([testedSnake], otherSnakes))
-    .map(snake => snake.body.data)
+    .map(snake => snake.body)
     .union()
     .flatten()
     .value();
@@ -84,7 +85,7 @@ export function getScoredDirections(
 
   // Set immediate collision possibilities.
   setCollisionPossibilities(
-    testedSnake.body.data[0],
+    testedSnake.body[0],
     testedSnake.health,
     testedSnake.health > MIN_HEALTH ? snakeBodiesAndFood : snakeBodies,
     boardWidth,
@@ -103,7 +104,7 @@ export function getScoredDirections(
     otherSnakesAreBigger(testedSnake, otherSnakes)
   ) {
     setScoreClosestFoodDirection(
-      testedSnake.body.data[0],
+      testedSnake.body[0],
       snakeBodies,
       food,
       scoredDirections
@@ -112,7 +113,7 @@ export function getScoredDirections(
 
   // Try to estimate the next moves and how safe they are.
   checkNextMoves(
-    testedSnake.body.data[0],
+    testedSnake.body[0],
     testedSnake.health,
     testedSnake.health > MIN_HEALTH ? snakeBodiesAndFood : snakeBodies,
     boardWidth,

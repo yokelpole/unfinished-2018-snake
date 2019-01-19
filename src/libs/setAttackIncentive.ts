@@ -9,12 +9,12 @@ export function setAttackIncentive(
   otherSnakes: Array<Snake>,
   scoredDirections: ScoredDirections
 ) {
-  const snakeHead: Point = testedSnake.body.data[0];
+  const snakeHead: Point = testedSnake.body[0];
 
   _.each(otherSnakes, (otherSnake: Snake) => {
     if (testedSnake.length <= otherSnake.length) return;
 
-    const otherSnakeHead = otherSnake.body.data[0];
+    const otherSnakeHead = otherSnake.body[0];
     const testedSnakeMoves: Array<Point> = getPossibleMovesForPoint(snakeHead);
     const otherSnakeMoves: Array<Point> = getPossibleMovesForPoint(
       otherSnakeHead

@@ -31,15 +31,17 @@ export interface MoveRequest extends Request {
 }
 
 export interface MoveRequestData {
-    game_id: string;
-    height: number;
-    width: number;
+    game: {
+        id: string;
+    }
+    board: {
+        height: number;
+        width: number;
+        snakes: Snake[];
+        food: Point[];
+    }
     turn: number;
     you: Snake;
-    food: { data: Point[]; };
-    snakes: {
-        data: Snake[];
-    };
 }
 
 interface MoveSend {
@@ -78,8 +80,5 @@ export interface Snake {
     taunt: string;
     health: number;
     length: number;
-    body: {
-        data: Array<Point>,
-    };
-    coords: Point[];        
+    body: Point[];
 }
