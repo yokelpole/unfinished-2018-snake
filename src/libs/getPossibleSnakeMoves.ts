@@ -1,5 +1,5 @@
-import { Snake, ScoredDirections, MoveRequestData } from "../types/battlesnake";
-import { getScoredDirections } from "./snakeLibs";
+import { Snake, MoveRequestData } from "../types/battlesnake";
+import { getScoredDirections } from "./getScoredDirections";
 import * as _ from "lodash";
 
 export function getPossibleSnakeMoves(

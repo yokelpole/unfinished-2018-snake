@@ -1,6 +1,7 @@
 import * as express from "express";
 import * as _ from "lodash";
 import * as snakeLibs from "../libs/snakeLibs";
+import { getScoredDirections } from "../libs/getScoredDirections";
 import { getPossibleSnakeMoves } from '../libs/getPossibleSnakeMoves';
 import {
   StartRequest,
@@ -10,7 +11,6 @@ import {
   MoveResponseData,
   StartResponseData,
   Snake,
-  Point,
   ScoredDirections
 } from "../types/battlesnake";
 
@@ -48,15 +48,11 @@ router.post(
 // Handle POST request to '/move'
 router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
   const requestData = req.body;
-  console.log('### IN MOVE');
-  console.log(requestData);
 
   // Own snake data.
   const testedSnake: Snake = snakeLibs.pruneSnakesTailsIfNotEaten([
     requestData.you
   ])[0];
-
-  console.log('### PAST GETTING SNAKE TAILS PRUNED');
 
   // Obstacles.
   const allSnakes: Array<Snake> = snakeLibs.pruneSnakesTailsIfNotEaten(
@@ -67,8 +63,6 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     .value();
   const food = requestData.board.food;
 
-  console.log('### GOT PAST THE OBSTACLES');
-
   // Try to estimate what each snake's optimal next move would be.
   // TODO: Make this able to be executed multiple times with lessening scores.
   const possibleNextMovesForOtherSnakes: Array<Snake> = getPossibleSnakeMoves(
@@ -78,10 +72,8 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     requestData
   );
 
-  console.log('### DONE ESTIMATING THE MOVES FOR SNAKES');
-  
   // Assign the directions that we can go without hitting a snake or food.
-  const scoredDirections: ScoredDirections = snakeLibs.getScoredDirections(
+  const scoredDirections: ScoredDirections = getScoredDirections(
     testedSnake,
     possibleNextMovesForOtherSnakes,
     food,
@@ -89,14 +81,11 @@ router.post("/move", (req: MoveRequest, res: MoveResponse): MoveResponse => {
     requestData.board.height
   );
 
-    console.log('### DONE SCORING DIRECTIONS');
-
   // Choose the highest value in the scored directions and go with it.
   const move = _.maxBy(
     _.keys(scoredDirections),
     direction => scoredDirections[direction]
   );
-  console.log('### ASSEMBLING RESPONSE DATA');
 
   // Response data
   const responseData: MoveResponseData = { move };
